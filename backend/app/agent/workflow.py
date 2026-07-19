@@ -63,8 +63,9 @@ def verify(db:Session,incident:Incident,hosted:bool=False)->list[VerificationRun
         (workspace/"demo_app/tests/test_regression_checkout.py").write_text(REGRESSION,encoding="utf-8")
         source=workspace/"demo_app/app/main.py"; content=source.read_text(encoding="utf-8")
         old='taxable * cast(Decimal, rate) if order.discount_code else taxable * (rate or Decimal("0"))'
-        if old not in content: raise ValueError("Candidate patch context not found")
-        source.write_text(content.replace(old,'taxable * (rate or Decimal("0"))',1),encoding="utf-8")
+        new='taxable * (rate or Decimal("0"))'
+        if old in content: source.write_text(content.replace(old,new,1),encoding="utf-8")
+        elif new not in content: raise ValueError("Candidate patch context not found")
         for kind,command in CHECKS:
             result=docker_run(command.split(),str(workspace),settings.sandbox_image)
             row=VerificationRun(patch_candidate_id=patch.id,test_type=kind,command=command,passed=result.exit_code==0,stdout=result.stdout,stderr=result.stderr,duration=result.duration,exit_code=result.exit_code); db.add(row); rows.append(row)
