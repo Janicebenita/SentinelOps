@@ -17,7 +17,7 @@ flowchart LR
   L --> H[Ranked hypotheses]
   H --> R[Reproduction and regression test]
   R --> P[Patch policy]
-  P --> D[Restricted Docker sandbox]
+  P --> D[Docker sandbox or safe local fallback]
   D --> V[Deterministic verification gate]
   V --> U{Human approval}
   U -->|approve| PR[Local branch, commit, PR record]
@@ -31,14 +31,14 @@ flowchart LR
 - Persisted, validated 20-state workflow and complete audit timeline.
 - Ranked evidence-for/evidence-against hypotheses with validated JSON contracts.
 - Deterministic mock provider; optional OpenAI-compatible boundary; explicit Gemini adapter placeholder.
-- Patch limits, protected paths, assertion/test protections, command allowlist, and network-disabled Docker runner.
+- Patch limits, protected paths, assertion/test protections, and automatic Docker/local sandbox selection.
 - Six-check verification view and approval-only draft PR record.
 - Responsive React operations dashboard with live state rail, charts, investigation evidence, diff, and approval control.
 - Three incidents; the checkout failure has the full repair path, while latency and missing-secret cases are diagnosis/escalation demonstrations.
 
 ## Quick start (local or GitHub Codespaces)
 
-Prerequisites: Python 3.12, Node 22, Docker with Compose, and Git. Codespaces installs these through `.devcontainer/devcontainer.json`.
+Prerequisites: Python 3.12, Node 22, and Git. Docker is recommended but optional.
 
 ```bash
 cp .env.example .env
@@ -61,17 +61,24 @@ In the dashboard, advance the incident through evidence, hypotheses, reproductio
 2. Select **Code → Codespaces → Create codespace on main**.
 3. Wait for `postCreateCommand` to install Python and frontend dependencies.
 4. In the Codespaces terminal run `cp .env.example .env` (skip this if `.env` exists).
-5. Run `make demo`. This builds the restricted sandbox image, starts all three services, waits for health, and keeps them supervised.
+5. Run `make demo`. It selects Docker when available or the safe local fallback, then starts and supervises all three services.
 6. Open the automatically forwarded **SentinelOps Dashboard** port `5173`. API OpenAPI is port `8000/docs`; Sentinel Shop OpenAPI is port `8001/docs`.
 7. To verify the complete seeded repair, open a second terminal and run `python scripts/validate_e2e.py`.
 
-Codespaces forwards ports `5173`, `8000`, and `8001`. Mock mode is the default; no paid model key is required. The Docker-in-Docker feature is necessary because reproduction and patch verification fail closed unless the restricted sandbox is available.
+Codespaces forwards ports `5173`, `8000`, and `8001`. Mock mode is the default; no paid model key or Docker installation is required.
+
+### Sandbox modes
+
+- **Docker Sandbox:** selected automatically when the `docker` executable exists. Candidate checks run with no network, bounded CPU, memory, processes, time, and a read-only container filesystem.
+- **Local Sandbox:** selected automatically when Docker is absent, including standard Codespaces. It copies candidate code into a fresh temporary workspace and invokes Python directly with `shell=False`. It accepts only exact, predefined pytest commands; shell fragments, arbitrary Python, package installation, and other commands are rejected. The temporary copy is deleted after every run.
+
+Docker mode runs the complete six-check gate. Local mode runs the regression, unit, and integration pytest gates and clearly records `sandbox_mode=local`; use Docker mode for the stronger Ruff, MyPy, and Bandit candidate-workspace gates.
 
 ### Commands and ports
 
 ```bash
 make setup  # install Python and frontend dependencies
-make demo   # build the restricted sandbox and start the complete system
+make demo   # auto-select a sandbox and start the complete system
 ```
 
 | Service | Port | Codespaces behavior |

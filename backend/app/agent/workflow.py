@@ -13,7 +13,7 @@ from ..schemas import HypothesisResponse, PatchProposal
 from ..services.audit import transition
 from ..tools.patch_tools import inspect_patch
 from ..tools.readers import git_evidence, read_jsonl
-from ..tools.sandbox import docker_run
+from ..tools.sandbox import get_sandbox
 
 REGRESSION='''from fastapi.testclient import TestClient\nfrom demo_app.app.main import app\ndef test_save10_tn_regression():\n    r=TestClient(app).post("/checkout",json={"items":[{"product_id":1,"quantity":2}],"discount_code":"SAVE10","region":"TN"})\n    assert r.status_code==200\n    assert r.json()["total"]=="43.2000"\n'''
 def require(db:Session,incident_id:int)->Incident:
@@ -43,10 +43,10 @@ def reproduce(db:Session,incident:Incident)->ReproductionAttempt:
         shutil.copytree(settings.demo_repo_path,workspace,ignore=shutil.ignore_patterns(".git","node_modules","dist",".venv","*.db",".mypy_cache",".pytest_cache",".ruff_cache",".pnpm-store",".coverage"))
         (workspace/"demo_app/tests/test_regression_checkout.py").write_text(REGRESSION,encoding="utf-8")
         command=["pytest","-q","demo_app/tests/test_regression_checkout.py"]
-        result=docker_run(command,str(workspace),settings.sandbox_image)
+        sandbox=get_sandbox(settings.sandbox_image); result=sandbox.run(command,str(workspace))
     confirmed=result.exit_code==1 and not result.timed_out
     row=ReproductionAttempt(incident_id=incident.id,command=" ".join(command),test_file=REGRESSION,result="confirmed" if confirmed else "failed",stdout=result.stdout,stderr=result.stderr,duration=time.perf_counter()-started,exit_code=result.exit_code); db.add(row); db.commit()
-    transition(db,incident,AgentState.REPRODUCTION_CONFIRMED if confirmed else AgentState.REPRODUCTION_FAILED,outputs={"exit_code":result.exit_code,"regression_failed_before_patch":confirmed,"sandboxed":True}); return row
+    transition(db,incident,AgentState.REPRODUCTION_CONFIRMED if confirmed else AgentState.REPRODUCTION_FAILED,outputs={"exit_code":result.exit_code,"regression_failed_before_patch":confirmed,"sandboxed":True,"sandbox_mode":sandbox.mode}); return row
 def generate_patch(db:Session,incident:Incident)->PatchCandidate:
     transition(db,incident,AgentState.GENERATING_PATCH); proposal=MockLLMProvider().generate("Repair reproduced checkout bug",PatchProposal); inspect_patch(proposal.patch,proposal.target_files,True)
     top=db.scalar(select(Hypothesis).where(Hypothesis.incident_id==incident.id).order_by(Hypothesis.rank))
@@ -66,8 +66,10 @@ def verify(db:Session,incident:Incident,hosted:bool=False)->list[VerificationRun
         new='taxable * (rate or Decimal("0"))'
         if old in content: source.write_text(content.replace(old,new,1),encoding="utf-8")
         elif new not in content: raise ValueError("Candidate patch context not found")
-        for kind,command in CHECKS:
-            result=docker_run(command.split(),str(workspace),settings.sandbox_image)
+        sandbox=get_sandbox(settings.sandbox_image)
+        checks=CHECKS if sandbox.mode=="docker" else CHECKS[:3]
+        for kind,command in checks:
+            result=sandbox.run(command.split(),str(workspace))
             row=VerificationRun(patch_candidate_id=patch.id,test_type=kind,command=command,passed=result.exit_code==0,stdout=result.stdout,stderr=result.stderr,duration=result.duration,exit_code=result.exit_code); db.add(row); rows.append(row)
     db.commit(); passed=all(r.passed for r in rows) and incident.current_state==AgentState.VERIFYING
     transition(db,incident,AgentState.VERIFICATION_PASSED if passed else AgentState.VERIFICATION_FAILED,outputs={"mandatory_checks":len(rows),"passed":passed,"rollback_plan":"Revert the single repair commit; no schema or data migration."})

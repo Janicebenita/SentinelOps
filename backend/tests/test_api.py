@@ -11,7 +11,11 @@ def test_full_mock_workflow(client, monkeypatch):
         calls["count"] += 1
         exit_code = 1 if calls["count"] == 1 else 0
         return CommandResult("sandbox evidence", "", exit_code, 0.01)
-    monkeypatch.setattr(workflow, "docker_run", sandbox_result)
+    class StubSandbox:
+        mode = "docker"
+        def run(self, command, workspace, timeout=90):
+            return sandbox_result(command, workspace, "test-image")
+    monkeypatch.setattr(workflow, "get_sandbox", lambda image: StubSandbox())
     client.post("/api/demo/seed")
     iid = client.get("/api/incidents").json()[-1]["id"]
     for action in ["start", "collect-evidence", "generate-hypotheses", "reproduce", "generate-patch", "verify"]:

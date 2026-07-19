@@ -9,7 +9,7 @@ frontend:
 demo-app:
 	uvicorn demo_app.app.main:app --reload --port 8001
 demo:
-	docker build -t sentinelops-sandbox:latest -f sandbox/Dockerfile .
+	python scripts/prepare_sandbox.py
 	python scripts/run_demo.py
 seed:
 	python scripts/seed_incident.py
