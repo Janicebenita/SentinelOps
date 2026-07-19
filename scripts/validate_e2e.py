@@ -33,7 +33,7 @@ def main() -> int:
         verification = client.post(f"{API}/incidents/{incident_id}/verify"); verification.raise_for_status()
         assert source_hash() == before
         failed = [check for check in verification.json() if not check["passed"]]
-        assert not failed, [(check["test_type"], check["stderr"][-500:]) for check in failed]
+        assert not failed, [(check["test_type"], check["stdout"][-1500:], check["stderr"][-500:]) for check in failed]
         assert client.post(f"{API}/incidents/{incident_id}/create-pr").status_code == 409
         evidence = client.get(f"{API}/incidents/{incident_id}/evidence").json()
         assert {item["evidence_type"] for item in evidence} >= {"log", "metric", "trace", "git"}
