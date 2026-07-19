@@ -67,6 +67,32 @@ In the dashboard, advance the incident through evidence, hypotheses, reproductio
 
 Codespaces forwards ports `5173`, `8000`, and `8001`. Mock mode is the default; no paid model key is required. The Docker-in-Docker feature is necessary because reproduction and patch verification fail closed unless the restricted sandbox is available.
 
+### Commands and ports
+
+```bash
+make setup  # install Python and frontend dependencies
+make demo   # build the restricted sandbox and start the complete system
+```
+
+| Service | Port | Codespaces behavior |
+|---|---:|---|
+| SentinelOps Dashboard | 5173 | Opens automatically after startup |
+| SentinelOps API | 8000 | Forwarded; OpenAPI at `/docs` |
+| Sentinel Shop demo | 8001 | Forwarded; OpenAPI at `/docs` |
+
+Public demo URL: `https://<your-codespace-name>-5173.app.github.dev/`
+
+### Three-minute demo
+
+- **0:00–0:20** Open the healthy dashboard and Sentinel Shop product endpoint.
+- **0:20–0:40** Trigger the TN + `SAVE10` checkout and show the HTTP 500/error-rate spike.
+- **0:40–1:10** Start Incident 1 and show collected JSON logs, metrics, trace span, Git evidence, and audit events.
+- **1:10–1:35** Show the ranked hypotheses; the nullable TN tax-rate explanation ranks first with evidence for and against.
+- **1:35–1:55** Reproduce the failure in the network-disabled sandbox and show the generated regression test failing before the patch.
+- **1:55–2:25** Review the isolated one-line candidate diff and run regression, unit, integration, Ruff, MyPy, and Bandit gates.
+- **2:25–2:45** Show the source tree remained unchanged, every check passed, and the agent stopped at human approval.
+- **2:45–3:00** Approve, create the PR report, show the persisted audit timeline, then Reset Demo. State that nothing was deployed.
+
 ## Configuration
 
 `LLM_PROVIDER=mock` is the default and needs no paid API. For an OpenAI-compatible endpoint set `LLM_PROVIDER=openai`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL`. `GEMINI_API_KEY` is reserved for the optional adapter. Do not commit `.env`.

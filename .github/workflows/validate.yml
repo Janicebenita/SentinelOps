@@ -20,9 +20,8 @@ jobs:
       - run: make lint
       - run: make typecheck
       - run: make security
-      - run: docker build -t sentinelops-sandbox:latest -f sandbox/Dockerfile .
-      - name: Start services
-        run: python scripts/run_demo.py > /tmp/sentinelops-demo.log 2>&1 &
+      - name: Start complete demo
+        run: make demo > /tmp/sentinelops-demo.log 2>&1 &
       - run: python scripts/health_check.py
       - run: python scripts/validate_e2e.py
       - name: Demo log

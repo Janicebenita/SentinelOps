@@ -44,6 +44,9 @@ def main() -> int:
         else: raise AssertionError("protected path policy did not reject patch")
         client.post(f"{API}/incidents/{incident_id}/approve", json={"approved_by": "e2e-operator"}).raise_for_status()
         client.post(f"{API}/incidents/{incident_id}/create-pr").raise_for_status()
+        reset = client.post(f"{API}/demo/reset"); reset.raise_for_status()
+        assert reset.json()["reset"] is True
+        assert client.get(f"{API}/incidents").json() == []
     print("Seeded incident passed every evidence, sandbox, policy, approval, and audit assertion")
     return 0
 
