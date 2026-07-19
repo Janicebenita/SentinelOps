@@ -87,7 +87,7 @@ def _modules_missing(python: str) -> list[str]:
     return result.stdout.strip().split(",") if result.stdout.strip() else []
 
 
-def main() -> int:
+def main(setup_only: bool = False) -> int:
     python = _python_with_pip()
     if python is None:
         print("No pip-capable Python interpreter is available in this environment.", file=sys.stderr)
@@ -103,7 +103,11 @@ def main() -> int:
 
     npm = shutil.which("npm") or shutil.which("npm.cmd")
     if npm is None:
-        print("npm is required", file=sys.stderr)
+        print(
+            "Node.js and npm are missing. Rebuild the Codespace so the official LTS Node "
+            "devcontainer feature can finish setup.",
+            file=sys.stderr,
+        )
         return 1
     vite = ROOT / "frontend" / "node_modules" / ".bin" / ("vite.cmd" if os.name == "nt" else "vite")
     if not vite.exists():
@@ -112,6 +116,10 @@ def main() -> int:
         if result.returncode:
             return result.returncode
 
+    if setup_only:
+        print("SentinelOps Python and frontend dependencies are ready.")
+        return 0
+
     prepared = subprocess.run([python, "scripts/prepare_sandbox.py"], cwd=ROOT, check=False)
     if prepared.returncode:
         return prepared.returncode
@@ -119,4 +127,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main(setup_only="--setup-only" in sys.argv[1:]))

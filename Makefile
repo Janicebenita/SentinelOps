@@ -1,7 +1,6 @@
 .PHONY: setup backend frontend demo-app demo seed reset test lint typecheck security clean
 setup:
-	python -m pip install -e ".[dev]"
-	cd frontend && npm install
+	python scripts/ensure_dependencies.py --setup-only
 backend:
 	uvicorn backend.app.main:app --reload --port 8000
 frontend:
