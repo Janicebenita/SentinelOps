@@ -91,6 +91,16 @@ make demo   # auto-select a sandbox and start the complete system
 
 Codespaces dashboard URL format: `https://<codespace-name>-5173.app.github.dev/`. The port is public automatically, but the URL is reachable only while that Codespace and `make demo` are running. Use the Render deployment described below for an always-on competition URL.
 
+### Stable Render deployment
+
+The root `render.yaml` Blueprint creates three services:
+
+- `janicebenita-sentinelops.onrender.com` — static React dashboard
+- `janicebenita-sentinelops-api.onrender.com` — FastAPI agent backend
+- `janicebenita-sentinel-shop.onrender.com` — seeded e-commerce demo application
+
+Create a Render Blueprint from this repository and deploy it. The hosted backend uses deterministic mock mode, seeds incidents when its ephemeral SQLite database is empty, and automatically selects the restricted Local Sandbox because nested Docker is unavailable. Free services can require a short cold start after inactivity; no API keys are required.
+
 For split production hosting, build the frontend with `VITE_API_BASE_URL=https://api.example.com` and set backend `CORS_ORIGINS` to the exact dashboard origins. Defaults allow only local Vite origins; wildcard CORS is not enabled. Deploy the backend and demo app as separate Python services, use PostgreSQL for multi-worker operation, and keep secrets in the hosting platform rather than repository files. See `.env.production.example`.
 
 Deterministic screenshot paths are available at `/?demoState=healthy`, `/?demoState=incident`, `/?demoState=evidence`, `/?demoState=hypothesis`, `/?demoState=reproduced`, `/?demoState=patch`, `/?demoState=verified`, `/?demoState=approval`, and `/?demoState=completed`. These are read-only fixtures and never bypass normal approval.

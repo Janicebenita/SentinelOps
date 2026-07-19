@@ -8,7 +8,10 @@ from .database import Base,SessionLocal,engine
 from .models import Incident
 from . import llm
 from .tools.sandbox import get_sandbox
+from .services.demo_seed import ensure_seeded
 Base.metadata.create_all(engine)
+with SessionLocal() as startup_db:
+    ensure_seeded(startup_db)
 app=FastAPI(title="SentinelOps API",version="0.1.0",description="Evidence-driven, approval-gated AI reliability engineer")
 app.add_middleware(CORSMiddleware,allow_origins=[x.strip() for x in settings.cors_origins.split(",") if x.strip()],allow_methods=["GET","POST"],allow_headers=["Content-Type"])
 app.include_router(router)

@@ -7,6 +7,7 @@ from ..database import get_db
 from ..models import *
 from ..schemas import ApprovalInput, IncidentCreate, IncidentRead
 from ..services.audit import transition
+from ..services.demo_seed import ensure_seeded
 router=APIRouter(prefix="/api")
 def serialize(row): return {c.name:getattr(row,c.name) for c in row.__table__.columns}
 @router.post("/incidents",response_model=IncidentRead)
@@ -53,8 +54,8 @@ def verification(iid:int,db:Session=Depends(get_db)):
 def timeline(iid:int,db:Session=Depends(get_db)): return listing(AuditEvent,iid,db)
 @router.post("/demo/seed")
 def seed(db:Session=Depends(get_db)):
-    if db.scalar(select(Incident).limit(1)): return {"seeded":False,"reason":"already seeded"}
-    rows=[Incident(title="Discount + TN tax causes checkout 500",description="SAVE10 orders in TN fail during tax arithmetic",severity="SEV1"),Incident(title="Catalog latency regression",description="Recent commit repeats product lookup in a loop",severity="SEV2"),Incident(title="Payment startup configuration missing",description="PAYMENT_PROVIDER_KEY is absent",severity="SEV2")]; db.add_all(rows); db.commit(); return {"seeded":True,"ids":[r.id for r in rows]}
+    seeded, ids = ensure_seeded(db)
+    return {"seeded": seeded, "ids": ids, "reason": None if seeded else "already seeded"}
 @router.post("/demo/trigger-incident")
 def trigger(db:Session=Depends(get_db)):
     row=db.scalar(select(Incident).order_by(Incident.id));
