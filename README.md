@@ -85,11 +85,11 @@ make demo   # auto-select a sandbox and start the complete system
 
 | Service | Port | Codespaces behavior |
 |---|---:|---|
-| SentinelOps Dashboard | 5173 | Opens automatically after startup |
+| SentinelOps Dashboard | 5173 | Opens automatically and is forwarded publicly while the Codespace is running |
 | SentinelOps API | 8000 | Forwarded; OpenAPI at `/docs` |
 | Sentinel Shop demo | 8001 | Forwarded; OpenAPI at `/docs` |
 
-Public demo URL: [SentinelOps Dashboard](https://reimagined-space-zebra-ijqp5qx79j5w275q-5173.app.github.dev/)
+Codespaces dashboard URL format: `https://<codespace-name>-5173.app.github.dev/`. The port is public automatically, but the URL is reachable only while that Codespace and `make demo` are running. Use the Render deployment described below for an always-on competition URL.
 
 For split production hosting, build the frontend with `VITE_API_BASE_URL=https://api.example.com` and set backend `CORS_ORIGINS` to the exact dashboard origins. Defaults allow only local Vite origins; wildcard CORS is not enabled. Deploy the backend and demo app as separate Python services, use PostgreSQL for multi-worker operation, and keep secrets in the hosting platform rather than repository files. See `.env.production.example`.
 

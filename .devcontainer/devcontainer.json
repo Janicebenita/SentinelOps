@@ -7,7 +7,11 @@
   },
   "forwardPorts": [5173, 8000, 8001],
   "portsAttributes": {
-    "5173": {"label": "SentinelOps Dashboard", "onAutoForward": "openPreview"},
+    "5173": {
+      "label": "SentinelOps Dashboard",
+      "onAutoForward": "openPreview",
+      "visibility": "public"
+    },
     "8000": {"label": "SentinelOps API"},
     "8001": {"label": "Sentinel Shop demo"}
   },
