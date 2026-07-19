@@ -89,11 +89,11 @@ make demo   # auto-select a sandbox and start the complete system
 | SentinelOps API | 8000 | Forwarded; OpenAPI at `/docs` |
 | Sentinel Shop demo | 8001 | Forwarded; OpenAPI at `/docs` |
 
-Public demo URL: `https://<your-codespace-name>-5173.app.github.dev/`
+Public demo URL: [SentinelOps Dashboard](https://reimagined-space-zebra-ijqp5qx79j5w275q-5173.app.github.dev/)
 
 For split production hosting, build the frontend with `VITE_API_BASE_URL=https://api.example.com` and set backend `CORS_ORIGINS` to the exact dashboard origins. Defaults allow only local Vite origins; wildcard CORS is not enabled. Deploy the backend and demo app as separate Python services, use PostgreSQL for multi-worker operation, and keep secrets in the hosting platform rather than repository files. See `.env.production.example`.
 
-Deterministic screenshots are available at `?demoState=healthy|incident|evidence|hypothesis|reproduced|patch|verified|approval|completed`; these are read-only fixtures and never bypass normal approval.
+Deterministic screenshot paths are available at `/?demoState=healthy`, `/?demoState=incident`, `/?demoState=evidence`, `/?demoState=hypothesis`, `/?demoState=reproduced`, `/?demoState=patch`, `/?demoState=verified`, `/?demoState=approval`, and `/?demoState=completed`. These are read-only fixtures and never bypass normal approval.
 
 ### Three-minute demo
 
