@@ -6,10 +6,13 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
 PYTHON_MODULES = ("fastapi", "httpx", "sqlalchemy", "uvicorn", "pytest")
+GET_PIP_URL = "https://bootstrap.pypa.io/get-pip.py"
 
 
 def _candidate_pythons() -> list[str]:
@@ -36,6 +39,29 @@ def _has_pip(python: str) -> bool:
     ).returncode == 0
 
 
+def _bootstrap_venv(candidates: list[str]) -> str | None:
+    if not candidates:
+        return None
+    venv = ROOT / ".venv"
+    base = candidates[0]
+    created = subprocess.run(
+        [base, "-m", "venv", "--without-pip", str(venv)], cwd=ROOT, check=False
+    )
+    if created.returncode:
+        return None
+    python = venv / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    try:
+        with tempfile.TemporaryDirectory(prefix="sentinelops-pip-") as temp:
+            installer = Path(temp) / "get-pip.py"
+            print("Bootstrapping pip in an isolated project virtual environment")
+            urllib.request.urlretrieve(GET_PIP_URL, installer)  # noqa: S310
+            installed = subprocess.run([str(python), str(installer)], cwd=ROOT, check=False)
+    except OSError as exc:
+        print(f"Unable to download the official pip bootstrap: {exc}", file=sys.stderr)
+        return None
+    return str(python) if installed.returncode == 0 and _has_pip(str(python)) else None
+
+
 def _python_with_pip() -> str | None:
     candidates = _candidate_pythons()
     for python in candidates:
@@ -50,7 +76,7 @@ def _python_with_pip() -> str | None:
         )
         if _has_pip(python):
             return python
-    return None
+    return _bootstrap_venv(candidates)
 
 
 def _modules_missing(python: str) -> list[str]:
