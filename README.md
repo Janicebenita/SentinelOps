@@ -91,6 +91,10 @@ make demo   # auto-select a sandbox and start the complete system
 
 Public demo URL: `https://<your-codespace-name>-5173.app.github.dev/`
 
+For split production hosting, build the frontend with `VITE_API_BASE_URL=https://api.example.com` and set backend `CORS_ORIGINS` to the exact dashboard origins. Defaults allow only local Vite origins; wildcard CORS is not enabled. Deploy the backend and demo app as separate Python services, use PostgreSQL for multi-worker operation, and keep secrets in the hosting platform rather than repository files. See `.env.production.example`.
+
+Deterministic screenshots are available at `?demoState=healthy|incident|evidence|hypothesis|reproduced|patch|verified|approval|completed`; these are read-only fixtures and never bypass normal approval.
+
 ### Three-minute demo
 
 - **0:00–0:20** Open the healthy dashboard and Sentinel Shop product endpoint.

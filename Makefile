@@ -1,4 +1,4 @@
-.PHONY: setup backend frontend demo-app demo seed reset test lint typecheck security clean
+.PHONY: setup backend frontend demo-app demo seed reset test lint typecheck security benchmark clean
 setup:
 	python scripts/ensure_dependencies.py --setup-only
 backend:
@@ -22,6 +22,8 @@ typecheck:
 	mypy backend demo_app
 security:
 	bandit -q -lll -r backend demo_app
+benchmark:
+	python scripts/benchmark.py
 health:
 	python scripts/health_check.py
 clean:

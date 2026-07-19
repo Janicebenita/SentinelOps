@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from .state import AgentState
 from ..config import settings
-from ..llm import MockLLMProvider
+from ..llm import get_provider
 from ..models import ApprovalRequest, EvidenceItem, Hypothesis, Incident, PatchCandidate, PullRequestRecord, ReproductionAttempt, VerificationRun
 from ..schemas import HypothesisResponse, PatchProposal
 from ..services.audit import transition
@@ -30,7 +30,7 @@ def collect_evidence(db:Session,incident:Incident)->list[EvidenceItem]:
     transition(db,incident,AgentState.EVIDENCE_READY,outputs={"evidence_count":len(items)}); return items
 def hypotheses(db:Session,incident:Incident)->list[Hypothesis]:
     transition(db,incident,AgentState.GENERATING_HYPOTHESES)
-    try: response=MockLLMProvider().generate("Diagnose checkout incident",HypothesisResponse)
+    try: response=get_provider(settings.llm_provider).generate("Diagnose checkout incident",HypothesisResponse)
     except Exception as exc: transition(db,incident,AgentState.ESCALATED,outputs={"error":str(exc)}); raise
     rows=[]
     for rank,h in enumerate(response.hypotheses,1):
@@ -48,7 +48,7 @@ def reproduce(db:Session,incident:Incident)->ReproductionAttempt:
     row=ReproductionAttempt(incident_id=incident.id,command=" ".join(command),test_file=REGRESSION,result="confirmed" if confirmed else "failed",stdout=result.stdout,stderr=result.stderr,duration=time.perf_counter()-started,exit_code=result.exit_code); db.add(row); db.commit()
     transition(db,incident,AgentState.REPRODUCTION_CONFIRMED if confirmed else AgentState.REPRODUCTION_FAILED,outputs={"exit_code":result.exit_code,"regression_failed_before_patch":confirmed,"sandboxed":True,"sandbox_mode":sandbox.mode}); return row
 def generate_patch(db:Session,incident:Incident)->PatchCandidate:
-    transition(db,incident,AgentState.GENERATING_PATCH); proposal=MockLLMProvider().generate("Repair reproduced checkout bug",PatchProposal); inspect_patch(proposal.patch,proposal.target_files,True)
+    transition(db,incident,AgentState.GENERATING_PATCH); proposal=get_provider(settings.llm_provider).generate("Repair reproduced checkout bug",PatchProposal); inspect_patch(proposal.patch,proposal.target_files,True)
     top=db.scalar(select(Hypothesis).where(Hypothesis.incident_id==incident.id).order_by(Hypothesis.rank))
     if top is None: raise ValueError("Hypothesis missing")
     row=PatchCandidate(incident_id=incident.id,hypothesis_id=top.id,diff=proposal.patch,explanation=proposal.summary,files_changed=proposal.target_files,risk_score=.18); db.add(row); db.commit(); transition(db,incident,AgentState.PATCH_READY,outputs={"patch_id":row.id}); return row

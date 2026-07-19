@@ -43,6 +43,8 @@ def evidence(iid:int,db:Session=Depends(get_db)): return listing(EvidenceItem,ii
 def hyp(iid:int,db:Session=Depends(get_db)): return listing(Hypothesis,iid,db)
 @router.get("/incidents/{iid}/patches")
 def patches(iid:int,db:Session=Depends(get_db)): return listing(PatchCandidate,iid,db)
+@router.get("/incidents/{iid}/pull-requests")
+def pull_requests(iid:int,db:Session=Depends(get_db)): return listing(PullRequestRecord,iid,db)
 @router.get("/incidents/{iid}/verification")
 def verification(iid:int,db:Session=Depends(get_db)):
     ids=select(PatchCandidate.id).where(PatchCandidate.incident_id==iid); return [serialize(x) for x in db.scalars(select(VerificationRun).where(VerificationRun.patch_candidate_id.in_(ids)))]

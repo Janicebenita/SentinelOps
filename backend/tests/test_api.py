@@ -3,6 +3,13 @@ def test_seed_and_approval_gate(client):
     incident = client.get("/api/incidents").json()[-1]
     assert client.post(f"/api/incidents/{incident['id']}/create-pr").status_code == 409
 
+def test_provider_health_is_safe(client):
+    response=client.get("/health")
+    assert response.status_code==200
+    body=response.json()
+    assert body["provider"]=="mock" and "api_key" not in str(body).lower()
+    assert body["sandbox_mode"] in {"docker","local"}
+
 def test_full_mock_workflow(client, monkeypatch):
     from backend.app.agent import workflow
     from backend.app.tools.sandbox import CommandResult

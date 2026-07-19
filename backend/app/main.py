@@ -1,10 +1,26 @@
+import httpx
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import select, text
 from .api import router
-from .database import Base,engine
+from .config import settings
+from .database import Base,SessionLocal,engine
+from .models import Incident
+from . import llm
+from .tools.sandbox import get_sandbox
 Base.metadata.create_all(engine)
 app=FastAPI(title="SentinelOps API",version="0.1.0",description="Evidence-driven, approval-gated AI reliability engineer")
-app.add_middleware(CORSMiddleware,allow_origins=["*"],allow_methods=["*"],allow_headers=["*"])
+app.add_middleware(CORSMiddleware,allow_origins=[x.strip() for x in settings.cors_origins.split(",") if x.strip()],allow_methods=["GET","POST"],allow_headers=["Content-Type"])
 app.include_router(router)
 @app.get("/health")
-def health(): return {"status":"ok","provider":"mock","auto_deploy":False}
+def health():
+    database=False; seeded=False
+    try:
+        with SessionLocal() as db:
+            db.execute(text("SELECT 1")); database=True; seeded=db.scalar(select(Incident.id).limit(1)) is not None
+    except Exception: pass
+    try: demo_app=httpx.get(f"{settings.demo_app_url}/health",timeout=1).is_success
+    except httpx.HTTPError: demo_app=False
+    mode=get_sandbox(settings.sandbox_image).mode; actual=type(llm.get_provider(settings.llm_provider)).__name__.replace("LLMProvider","").replace("Provider","").lower()
+    ready=database and demo_app and seeded and actual=="mock" and mode in {"docker","local"}
+    return {"status":"ok" if ready else "degraded","ready":ready,"backend":True,"demo_app":demo_app,"database":database,"provider":actual,"configured_provider":settings.llm_provider,"provider_warning":llm.provider_warning,"mock_provider":actual=="mock","seeded":seeded,"sandbox_mode":mode,"auto_deploy":False}
