@@ -1,8 +1,8 @@
-import {render,screen,waitFor,fireEvent} from '@testing-library/react';import {QueryClient,QueryClientProvider} from '@tanstack/react-query';import {afterEach,describe,expect,it,vi} from 'vitest';import App from './App';
+import {cleanup,render,screen,waitFor,fireEvent} from '@testing-library/react';import {QueryClient,QueryClientProvider} from '@tanstack/react-query';import {afterEach,describe,expect,it,vi} from 'vitest';import App from './App';
 const incident={id:1,title:'Discount + TN tax causes checkout 500',description:'SAVE10 orders fail',severity:'SEV1',status:'open',current_state:'NEW',created_at:'2026-07-19T00:00:00Z'};
 const response=(data:unknown,status=200)=>Promise.resolve(new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}}));
 function mount(){return render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><App/></QueryClientProvider>)}
-afterEach(()=>vi.unstubAllGlobals());
+afterEach(()=>{cleanup();vi.unstubAllGlobals()});
 describe('competition dashboard bootstrap',()=>{
  it('auto-seeds an empty database and selects checkout incident',async()=>{let seeded=false;const calls:string[]=[];vi.stubGlobal('fetch',vi.fn((input:RequestInfo|URL)=>{const url=String(input);calls.push(url);if(url.endsWith('/api/incidents'))return response(seeded?[incident]:[]);if(url.endsWith('/api/demo/seed')){seeded=true;return response({seeded:true,ids:[1]})}if(url.endsWith('/api/incidents/1'))return response(incident);if(url.endsWith('/health'))return response({ready:true});return response([])}));mount();expect(await screen.findByText(incident.title)).toBeTruthy();expect(calls.some(x=>x.endsWith('/api/demo/seed'))).toBe(true)});
  it('shows an actionable error when backend is unavailable',async()=>{vi.stubGlobal('fetch',vi.fn(()=>Promise.reject(new Error('offline'))));mount();expect(await screen.findByText('Backend connection failed',{}, {timeout:4000})).toBeTruthy();expect(screen.getByText(/make demo/)).toBeTruthy()});
