@@ -39,7 +39,7 @@ services:
     name: janicebenita-sentinelops
     runtime: static
     branch: main
-    buildCommand: cd frontend && npm ci && npm run build
+    buildCommand: corepack enable && cd frontend && pnpm install --frozen-lockfile && pnpm run build
     staticPublishPath: frontend/dist
     autoDeployTrigger: checksPass
     envVars:
