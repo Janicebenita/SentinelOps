@@ -9,7 +9,8 @@ frontend:
 demo-app:
 	uvicorn demo_app.app.main:app --reload --port 8001
 demo:
-	docker compose up --build
+	docker build -t sentinelops-sandbox:latest -f sandbox/Dockerfile .
+	python scripts/run_demo.py
 seed:
 	python scripts/seed_incident.py
 reset:
@@ -23,5 +24,7 @@ typecheck:
 	mypy backend demo_app
 security:
 	bandit -q -lll -r backend demo_app
+health:
+	python scripts/health_check.py
 clean:
 	docker compose down

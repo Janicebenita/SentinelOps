@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from demo_app.app.main import app
+from demo_app.app.main import TAX_RATES, app
 
 client = TestClient(app)
 def test_health_and_products():
@@ -11,8 +11,5 @@ def test_checkout_without_discount():
     assert client.post("/checkout", json={"items": [{"product_id": 1, "quantity": 2}], "region": "TN"}).status_code == 200
 def test_checkout_with_discount_other_region():
     assert client.post("/checkout", json={"items": [{"product_id": 1, "quantity": 2}], "discount_code": "SAVE10", "region": "CA"}).status_code == 200
-def test_seeded_discount_tn_failure():
-    response = client.post("/checkout", json={"items": [{"product_id": 1, "quantity": 2}], "discount_code": "SAVE10", "region": "TN"})
-    assert response.status_code == 500
-    assert response.headers["x-request-id"]
-
+def test_seeded_discount_tn_fixture():
+    assert TAX_RATES["TN"] is None

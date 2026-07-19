@@ -56,6 +56,7 @@ def seed(db:Session=Depends(get_db)):
 @router.post("/demo/trigger-incident")
 def trigger(db:Session=Depends(get_db)):
     row=db.scalar(select(Incident).order_by(Incident.id));
+    if row is None: raise HTTPException(404,"Seed an incident first")
     if row.current_state=="NEW": transition(db,row,AgentState.ALERT_RECEIVED,actor="demo-alert")
     return serialize(row)
 @router.post("/demo/generate-traffic")

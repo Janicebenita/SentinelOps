@@ -55,6 +55,18 @@ python scripts/generate_traffic.py
 
 In the dashboard, advance the incident through evidence, hypotheses, reproduction, patch, and verification; approval is a separate required action.
 
+## Exact GitHub Codespaces setup
+
+1. Open [the SentinelOps repository](https://github.com/Janicebenita/SentinelOps).
+2. Select **Code → Codespaces → Create codespace on main**.
+3. Wait for `postCreateCommand` to install Python and frontend dependencies.
+4. In the Codespaces terminal run `cp .env.example .env` (skip this if `.env` exists).
+5. Run `make demo`. This builds the restricted sandbox image, starts all three services, waits for health, and keeps them supervised.
+6. Open the automatically forwarded **SentinelOps Dashboard** port `5173`. API OpenAPI is port `8000/docs`; Sentinel Shop OpenAPI is port `8001/docs`.
+7. To verify the complete seeded repair, open a second terminal and run `python scripts/validate_e2e.py`.
+
+Codespaces forwards ports `5173`, `8000`, and `8001`. Mock mode is the default; no paid model key is required. The Docker-in-Docker feature is necessary because reproduction and patch verification fail closed unless the restricted sandbox is available.
+
 ## Configuration
 
 `LLM_PROVIDER=mock` is the default and needs no paid API. For an OpenAI-compatible endpoint set `LLM_PROVIDER=openai`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL`. `GEMINI_API_KEY` is reserved for the optional adapter. Do not commit `.env`.

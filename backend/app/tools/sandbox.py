@@ -16,4 +16,9 @@ def docker_run(command:list[str],workspace:str,image:str="sentinelops-sandbox:la
     try:
         result=subprocess.run(docker,text=True,capture_output=True,timeout=timeout,check=False)
         return CommandResult(result.stdout,result.stderr,result.returncode,time.perf_counter()-started)
-    except subprocess.TimeoutExpired as exc: return CommandResult(exc.stdout or "",exc.stderr or "",124,time.perf_counter()-started,True)
+    except OSError as exc:
+        return CommandResult("",f"Sandbox unavailable: {exc}",127,time.perf_counter()-started)
+    except subprocess.TimeoutExpired as exc:
+        stdout = exc.stdout.decode() if isinstance(exc.stdout, bytes) else (exc.stdout or "")
+        stderr = exc.stderr.decode() if isinstance(exc.stderr, bytes) else (exc.stderr or "")
+        return CommandResult(stdout,stderr,124,time.perf_counter()-started,True)

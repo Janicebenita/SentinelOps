@@ -1,10 +1,10 @@
 import json
 import os
 import httpx
-from pydantic import BaseModel, ValidationError
-from .base import LLMProvider
+from pydantic import ValidationError
+from .base import LLMProvider, OutputT
 class OpenAIProvider(LLMProvider):
-    def generate(self,task:str,output_model:type[BaseModel])->BaseModel:
+    def generate(self,task:str,output_model:type[OutputT])->OutputT:
         url=os.getenv("OPENAI_BASE_URL","https://api.openai.com/v1").rstrip("/")+"/chat/completions"
         payload={"model":os.getenv("OPENAI_MODEL","gpt-4.1-mini"),"messages":[{"role":"system","content":"Return JSON only matching this schema: "+json.dumps(output_model.model_json_schema())},{"role":"user","content":task}],"response_format":{"type":"json_object"}}
         last:Exception|None=None

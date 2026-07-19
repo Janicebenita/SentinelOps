@@ -3,7 +3,15 @@ def test_seed_and_approval_gate(client):
     incident = client.get("/api/incidents").json()[-1]
     assert client.post(f"/api/incidents/{incident['id']}/create-pr").status_code == 409
 
-def test_full_mock_workflow(client):
+def test_full_mock_workflow(client, monkeypatch):
+    from backend.app.agent import workflow
+    from backend.app.tools.sandbox import CommandResult
+    calls = {"count": 0}
+    def sandbox_result(command, workspace, image):
+        calls["count"] += 1
+        exit_code = 1 if calls["count"] == 1 else 0
+        return CommandResult("sandbox evidence", "", exit_code, 0.01)
+    monkeypatch.setattr(workflow, "docker_run", sandbox_result)
     client.post("/api/demo/seed")
     iid = client.get("/api/incidents").json()[-1]["id"]
     for action in ["start", "collect-evidence", "generate-hypotheses", "reproduce", "generate-patch", "verify"]:

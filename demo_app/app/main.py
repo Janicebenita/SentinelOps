@@ -5,6 +5,7 @@ import time
 import traceback
 import uuid
 from decimal import Decimal
+from typing import TypedDict, cast
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, PlainTextResponse
@@ -15,7 +16,11 @@ from .observability import COUNTERS, LATENCIES, Span, append_jsonl, event, prome
 logger = logging.getLogger("demo_app")
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 app = FastAPI(title="Sentinel Shop", version="0.1.0")
-PRODUCTS = {1: {"id": 1, "name": "Telemetry Mug", "price": Decimal("24.00")}, 2: {"id": 2, "name": "On-call Hoodie", "price": Decimal("64.00")}}
+class Product(TypedDict):
+    id: int
+    name: str
+    price: Decimal
+PRODUCTS: dict[int, Product] = {1: {"id": 1, "name": "Telemetry Mug", "price": Decimal("24.00")}, 2: {"id": 2, "name": "On-call Hoodie", "price": Decimal("64.00")}}
 TAX_RATES: dict[str, Decimal | None] = {"CA": Decimal("0.0725"), "NY": Decimal("0.04"), "TN": None}
 
 class CartItem(BaseModel):
@@ -59,10 +64,9 @@ def checkout(order: CheckoutRequest) -> dict[str, str]:
         taxable = subtotal - discount
         rate = TAX_RATES.get(order.region, Decimal("0"))
         # SEEDED BUG: TN's legacy rate is null and only reaches this operation on discounted orders.
-        tax = taxable * rate if order.discount_code else taxable * (rate or Decimal("0"))
+        tax = taxable * cast(Decimal, rate) if order.discount_code else taxable * (rate or Decimal("0"))
         total = taxable + tax
         event(logger, logging.INFO, "checkout_completed", region=order.region, total=str(total))
         return {"subtotal": str(subtotal), "discount": str(discount), "tax": str(tax), "total": str(total)}
 @app.get("/metrics", response_class=PlainTextResponse)
 def metrics() -> str: return prometheus_text()
-
