@@ -1,0 +1,4 @@
+import type {Incident,Hypothesis,Audit,Verification} from '../types'
+const BASE=import.meta.env.VITE_API_URL||''
+async function req<T>(path:string,init?:RequestInit):Promise<T>{const r=await fetch(`${BASE}${path}`,{headers:{'Content-Type':'application/json'},...init});if(!r.ok)throw new Error(await r.text());return r.json()}
+export const api={incidents:()=>req<Incident[]>('/api/incidents'),seed:()=>req('/api/demo/seed',{method:'POST'}),get:(id:number)=>req<Incident>(`/api/incidents/${id}`),hypotheses:(id:number)=>req<Hypothesis[]>(`/api/incidents/${id}/hypotheses`),timeline:(id:number)=>req<Audit[]>(`/api/incidents/${id}/timeline`),verification:(id:number)=>req<Verification[]>(`/api/incidents/${id}/verification`),action:(id:number,a:string,body?:object)=>req(`/api/incidents/${id}/${a}`,{method:'POST',body:body?JSON.stringify(body):undefined})}

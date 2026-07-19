@@ -1,0 +1,19 @@
+def test_seed_and_approval_gate(client):
+    assert client.post("/api/demo/seed").status_code == 200
+    incident = client.get("/api/incidents").json()[-1]
+    assert client.post(f"/api/incidents/{incident['id']}/create-pr").status_code == 409
+
+def test_full_mock_workflow(client):
+    client.post("/api/demo/seed")
+    iid = client.get("/api/incidents").json()[-1]["id"]
+    for action in ["start", "collect-evidence", "generate-hypotheses", "reproduce", "generate-patch", "verify"]:
+        response = client.post(f"/api/incidents/{iid}/{action}")
+        assert response.status_code == 200, response.text
+    hypotheses = client.get(f"/api/incidents/{iid}/hypotheses").json()
+    assert len(hypotheses) >= 2 and hypotheses[0]["confidence"] > 0.9
+    checks = client.get(f"/api/incidents/{iid}/verification").json()
+    assert len(checks) == 6 and all(x["passed"] for x in checks)
+    assert client.get(f"/api/incidents/{iid}").json()["current_state"] == "AWAITING_APPROVAL"
+    assert client.post(f"/api/incidents/{iid}/approve", json={"approved_by": "operator"}).status_code == 200
+    assert client.post(f"/api/incidents/{iid}/create-pr").json()["status"] == "draft"
+    assert len(client.get(f"/api/incidents/{iid}/audit-log").json()) >= 10
