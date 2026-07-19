@@ -48,6 +48,8 @@ make demo
 
 Open the forwarded dashboard on port `5173`, API docs on port `8000/docs`, and demo shop docs on port `8001/docs`. Then:
 
+The Vite server proxies `/api` to the private backend, so only port `5173` needs public visibility in Codespaces.
+
 ```bash
 make seed
 python scripts/generate_traffic.py
