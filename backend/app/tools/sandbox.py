@@ -1,4 +1,5 @@
 from __future__ import annotations
+import os
 import re
 import subprocess
 import time
@@ -12,7 +13,11 @@ def validate_command(command:list[str])->None:
     if command[0]=="git" and (len(command)<2 or command[1] not in {"diff","status","show"}): raise ValueError("Git command is not read-only")
 def docker_run(command:list[str],workspace:str,image:str="sentinelops-sandbox:latest",timeout:int=90)->CommandResult:
     validate_command(command); started=time.perf_counter()
-    docker=["docker","run","--rm","--network=none","--cpus=1","--memory=512m","--pids-limit=128","--read-only","--tmpfs","/tmp:rw,noexec,nosuid,size=128m","-v",f"{workspace}:/workspace:rw","-w","/workspace",image,*command]
+    docker=["docker","run","--rm","--network=none","--cpus=1","--memory=512m","--pids-limit=128","--read-only","--tmpfs","/tmp:rw,noexec,nosuid,size=128m"]
+    getuid=getattr(os,"getuid",None); getgid=getattr(os,"getgid",None)
+    if callable(getuid) and callable(getgid):
+        docker.extend(["--user",f"{getuid()}:{getgid()}"])
+    docker.extend(["-e","HOME=/tmp","-v",f"{workspace}:/workspace:rw","-w","/workspace",image,*command])
     try:
         result=subprocess.run(docker,text=True,capture_output=True,timeout=timeout,check=False)
         return CommandResult(result.stdout,result.stderr,result.returncode,time.perf_counter()-started)
