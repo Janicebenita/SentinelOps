@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import subprocess
+import sys
 from pathlib import Path
 
-from backend.app.tools.sandbox import docker_available
-
 ROOT = Path(__file__).parents[1]
+sys.path.insert(0, str(ROOT))
+
+from backend.app.tools.sandbox import docker_available  # noqa: E402
 
 
 def main() -> int:
