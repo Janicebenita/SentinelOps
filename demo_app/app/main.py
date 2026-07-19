@@ -62,7 +62,7 @@ def checkout(order: CheckoutRequest) -> dict[str, str]:
         subtotal = sum(PRODUCTS[i.product_id]["price"] * i.quantity for i in order.items)
         discount = subtotal * Decimal("0.10") if order.discount_code == "SAVE10" else Decimal("0")
         taxable = subtotal - discount
-        rate = TAX_RATES.get(order.region, Decimal("0"))
+        rate = cast(Decimal | None, TAX_RATES.get(order.region, Decimal("0")))
         # SEEDED BUG: TN's legacy rate is null and only reaches this operation on discounted orders.
         tax = taxable * cast(Decimal, rate) if order.discount_code else taxable * (rate or Decimal("0"))
         total = taxable + tax
