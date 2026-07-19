@@ -9,6 +9,7 @@ frontend:
 demo-app:
 	uvicorn demo_app.app.main:app --reload --port 8001
 demo:
+	python scripts/ensure_dependencies.py
 	python scripts/prepare_sandbox.py
 	python scripts/run_demo.py
 seed:

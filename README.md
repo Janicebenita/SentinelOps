@@ -61,7 +61,7 @@ In the dashboard, advance the incident through evidence, hypotheses, reproductio
 2. Select **Code → Codespaces → Create codespace on main**.
 3. Wait for `postCreateCommand` to install Python and frontend dependencies.
 4. In the Codespaces terminal run `cp .env.example .env` (skip this if `.env` exists).
-5. Run `make demo`. It selects Docker when available or the safe local fallback, then starts and supervises all three services.
+5. Run `make demo`. It installs any missing launch dependencies, selects Docker when available or the safe local fallback, then starts and supervises all three services.
 6. Open the automatically forwarded **SentinelOps Dashboard** port `5173`. API OpenAPI is port `8000/docs`; Sentinel Shop OpenAPI is port `8001/docs`.
 7. To verify the complete seeded repair, open a second terminal and run `python scripts/validate_e2e.py`.
 
