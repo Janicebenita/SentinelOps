@@ -163,21 +163,31 @@ The investigation shows a nullable Tennessee tax rate as the highest-ranked expl
 ## 🧠 Architecture
 
 ```mermaid
-flowchart LR
-    A[Sentinel Shop] -->|logs, metrics, traces| B[Evidence Collectors]
-    C[Git, Source and Tests] --> B
-    B --> D[Persisted Agent State Machine]
+%%{init: {"themeVariables": {"fontSize": "22px"}, "flowchart": {"nodeSpacing": 70, "rankSpacing": 80, "curve": "basis"}}}%%
+flowchart TB
+    A[Sentinel Shop<br/>Observable Demo Service] -->|Logs · Metrics · Traces| B[Evidence Collectors]
+    C[Git History · Source Code · Tests] --> B
+    B --> D[Persisted Agent<br/>State Machine]
     D --> E[Structured LLM Provider]
-    E --> F[Ranked Hypotheses]
-    F --> G[Failure Reproduction]
-    G --> H[Regression Test]
-    H --> I[Patch Policy]
-    I --> J[Docker or Local Sandbox]
-    J --> K[Six Verification Gates]
+    E --> F[Ranked, Falsifiable<br/>Hypotheses]
+    F --> G[Network-Disabled<br/>Failure Reproduction]
+    G --> H[Generated Regression Test]
+    H --> I[Bounded Patch Policy]
+    I --> J[Docker or Restricted<br/>Local Sandbox]
+    J --> K[Six Deterministic<br/>Verification Gates]
     K --> L{Human Approval}
-    L -->|Approve| M[Local Branch, Commit and PR Report]
+    L -->|Approve| M[Local Branch · Commit<br/>PR Report]
     L -->|Reject| N[Close Without Changes]
     M --> O[Never Auto-Deploy]
+
+    classDef source fill:#082f49,stroke:#22d3ee,color:#f8fafc,stroke-width:2px;
+    classDef process fill:#172554,stroke:#818cf8,color:#f8fafc,stroke-width:2px;
+    classDef safety fill:#451a03,stroke:#f59e0b,color:#fef3c7,stroke-width:3px;
+    classDef stop fill:#450a0a,stroke:#fb7185,color:#fff1f2,stroke-width:2px;
+    class A,C source;
+    class B,D,E,F,G,H,I,J,K process;
+    class L,M safety;
+    class N,O stop;
 ```
 
 ### Persisted workflow
