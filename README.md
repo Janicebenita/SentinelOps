@@ -1,48 +1,98 @@
-# SentinelOps — Autonomous AI Reliability Engineer
+<h1 align="center">🛡️ SentinelOps</h1>
 
-[**Launch the Live Demo →**](https://janicebenita-sentinelops.onrender.com/)
+<h3 align="center">Autonomous AI Reliability Engineer</h3>
 
-> Hosted on Render. Free-tier services may take about 50 seconds to wake after inactivity.
+<p align="center">
+  Evidence-first incident investigation, safe failure reproduction, bounded patch generation,<br/>
+  deterministic verification, and human-approved repair — with no automatic deployment.
+</p>
 
-SentinelOps is an evidence-first incident repair agent. It collects observable failure signals, ranks falsifiable hypotheses, proves a regression, proposes a bounded patch, verifies mandatory gates in a restricted sandbox, and stops for human approval before preparing a pull request. It never deploys.
+<p align="center">
+  <a href="https://janicebenita-sentinelops.onrender.com/"><strong>🚀 Launch Live Demo</strong></a>
+  &nbsp;•&nbsp;
+  <a href="docs/sentinelops-complete-demo-with-approval.mp4"><strong>▶ Watch Demo Video</strong></a>
+  &nbsp;•&nbsp;
+  <a href="docs/architecture.md"><strong>🏗️ Architecture</strong></a>
+  &nbsp;•&nbsp;
+  <a href="docs/safety.md"><strong>🔐 Safety Model</strong></a>
+</p>
 
-## Problem
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Inter&weight=600&size=22&duration=3200&pause=900&color=22D3EE&center=true&vCenter=true&width=900&lines=Evidence-First+Incident+Response;Ranked+and+Falsifiable+Hypotheses;Network-Disabled+Failure+Reproduction;Regression-Proven+Candidate+Patches;Deterministic+Six-Gate+Verification;Human+Approval+Before+PR;Never+Auto-Deploy" alt="SentinelOps capabilities" />
+</p>
 
-Incident response is slowed by fragmented logs, traces, source history, and test output. AI can accelerate the investigation, but an unbounded agent is unsafe. SentinelOps separates probabilistic diagnosis from deterministic policy and verification gates, preserving evidence for every decision.
+<p align="center">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+</p>
 
-## Architecture
+<p align="center">
+  <img src="https://img.shields.io/badge/Agent-Stateful-7C3AED?style=flat-square" alt="Stateful agent" />
+  <img src="https://img.shields.io/badge/Sandbox-Network_Disabled-E11D48?style=flat-square" alt="Network-disabled sandbox" />
+  <img src="https://img.shields.io/badge/Approval-Human_Gated-F59E0B?style=flat-square" alt="Human approval" />
+  <img src="https://img.shields.io/badge/Deployment-Never_Automatic-16A34A?style=flat-square" alt="Never auto-deploy" />
+</p>
 
-```mermaid
-flowchart LR
-  A[Observable Sentinel Shop] -->|logs, metrics, spans| E[Evidence collectors]
-  G[Git and tests] --> E
-  E --> S[Persisted state machine]
-  S --> L[Structured LLM provider]
-  L --> H[Ranked hypotheses]
-  H --> R[Reproduction and regression test]
-  R --> P[Patch policy]
-  P --> D[Docker sandbox or safe local fallback]
-  D --> V[Deterministic verification gate]
-  V --> U{Human approval}
-  U -->|approve| PR[Local branch, commit, PR record]
-  U -->|reject| X[Close without changes]
-  PR --> N[Never auto-deploy]
-```
+> **Hosted on Render:** free-tier services may take about 50 seconds to wake after inactivity. The demo runs in deterministic mock mode and requires no paid AI key.
 
-## Highlights
+---
 
-- FastAPI demo shop with products, cart, checkout, discount codes, regional tax, health, Prometheus metrics, request IDs, JSON logs, stack traces, and spans.
-- Persisted, validated 20-state workflow and complete audit timeline.
-- Ranked evidence-for/evidence-against hypotheses with validated JSON contracts.
-- Deterministic mock provider; optional OpenAI-compatible boundary; explicit Gemini adapter placeholder.
-- Patch limits, protected paths, assertion/test protections, and automatic Docker/local sandbox selection.
-- Six-check verification view and approval-only draft PR record.
-- Responsive React operations dashboard with live state rail, charts, investigation evidence, diff, and approval control.
-- Three incidents; the checkout failure has the full repair path, while latency and missing-secret cases are diagnosis/escalation demonstrations.
+## 🏆 Project Submission
 
-## Quick start (local or GitHub Codespaces)
+### Safe Autonomous Incident Repair with Human Approval
 
-Prerequisites: Python 3.12, Node 22, and Git. Docker is recommended but optional.
+Production incidents force engineers to correlate fragmented logs, metrics, traces, source history, and test results under time pressure. Conventional coding agents can move quickly, but an unbounded agent can misdiagnose the failure, modify unrelated files, skip verification, or deploy an unsafe change.
+
+**SentinelOps** solves this by separating probabilistic diagnosis from deterministic safety policy. It gathers evidence, ranks falsifiable hypotheses, proves the regression, proposes a tightly bounded candidate patch, runs mandatory quality gates in an isolated sandbox, and stops for explicit human approval before preparing a pull-request report.
+
+---
+
+## 🚀 Overview
+
+SentinelOps is an autonomous reliability engineer designed for SRE, platform, and application teams. Every important decision is backed by persisted evidence and recorded on an auditable incident timeline.
+
+It provides:
+
+- 🔭 **Observable demo service** with structured logs, Prometheus metrics, traces, request IDs, health checks, and reproducible seeded failures
+- 🧾 **Multi-source evidence collection** across telemetry, Git history, source code, tests, and audit events
+- 🧠 **Ranked hypotheses** with explicit evidence for and against every explanation
+- 🧪 **Regression-first reproduction** inside a restricted, network-disabled sandbox
+- 🩹 **Bounded patch generation** protected by path, diff-size, assertion, and command policies
+- ✅ **Six deterministic verification gates** covering regression, unit, integration, Ruff, MyPy, and Bandit
+- 👤 **Mandatory human approval** before a local branch, commit, or PR report can be prepared
+- 📜 **Persisted audit timeline** for every transition, artifact, decision, and approval event
+- 🚫 **No automatic deployment** by design
+
+---
+
+## ✨ Why SentinelOps Is Different
+
+| Capability | SentinelOps approach |
+|---|---|
+| Diagnosis | Ranked, falsifiable hypotheses grounded in collected evidence |
+| Reproduction | Failure must be reproduced before a repair is considered |
+| Patch safety | Candidate changes are isolated and checked against deterministic policy |
+| Verification | All required gates must pass; model confidence cannot override failures |
+| Source protection | The original source tree remains unchanged during candidate evaluation |
+| Human control | The workflow stops at approval and clearly exposes the proposed diff |
+| Accountability | State, evidence, commands, outputs, and approvals are persisted |
+| Deployment | SentinelOps never deploys automatically |
+
+---
+
+## ⚡ Quick Start
+
+### Prerequisites
+
+- Python 3.11+
+- Node.js 22+
+- Git
+- Docker recommended, but optional
+
+### Run the complete system
 
 ```bash
 cp .env.example .env
@@ -50,64 +100,50 @@ make setup
 make demo
 ```
 
-Open the forwarded dashboard on port `5173`, API docs on port `8000/docs`, and demo shop docs on port `8001/docs`. Then:
+Open:
 
-The Vite server proxies `/api` to the private backend, so only port `5173` needs public visibility in Codespaces.
+- **SentinelOps dashboard:** http://localhost:5173
+- **SentinelOps API docs:** http://localhost:8000/docs
+- **Sentinel Shop API docs:** http://localhost:8001/docs
+
+In a second terminal, seed and exercise the repair scenario:
 
 ```bash
 make seed
 python scripts/generate_traffic.py
 ```
 
-In the dashboard, advance the incident through evidence, hypotheses, reproduction, patch, and verification; approval is a separate required action.
-
-## Exact GitHub Codespaces setup
-
-1. Open [the SentinelOps repository](https://github.com/Janicebenita/SentinelOps).
-2. Select **Code → Codespaces → Create codespace on main**.
-3. Wait for the tool verification and `make setup` post-create steps to install Python and frontend dependencies. Existing Codespaces must use **Codespaces: Full Rebuild Container** after this base-image change.
-4. In the Codespaces terminal run `cp .env.example .env` (skip this if `.env` exists).
-5. Run `make demo`. It installs any missing launch dependencies, selects Docker when available or the safe local fallback, then starts and supervises all three services.
-6. Open the automatically forwarded **SentinelOps Dashboard** port `5173`. API OpenAPI is port `8000/docs`; Sentinel Shop OpenAPI is port `8001/docs`.
-7. To verify the complete seeded repair, open a second terminal and run `python scripts/validate_e2e.py`.
-
-Codespaces forwards ports `5173`, `8000`, and `8001`. Mock mode is the default; no paid model key or Docker installation is required.
-
-### Sandbox modes
-
-- **Docker Sandbox:** selected automatically when the `docker` executable exists. Candidate checks run with no network, bounded CPU, memory, processes, time, and a read-only container filesystem.
-- **Local Sandbox:** selected automatically when Docker is absent, including standard Codespaces. It copies candidate code into a fresh temporary workspace and invokes Python directly with `shell=False`. It accepts only exact, predefined pytest commands; shell fragments, arbitrary Python, package installation, and other commands are rejected. The temporary copy is deleted after every run.
-
-Docker mode runs the complete six-check gate. Local mode runs the regression, unit, and integration pytest gates and clearly records `sandbox_mode=local`; use Docker mode for the stronger Ruff, MyPy, and Bandit candidate-workspace gates.
-
-### Commands and ports
+Validate the complete seeded workflow:
 
 ```bash
-make setup  # install Python and frontend dependencies
-make demo   # auto-select a sandbox and start the complete system
+python scripts/validate_e2e.py
 ```
 
-| Service | Port | Codespaces behavior |
-|---|---:|---|
-| SentinelOps Dashboard | 5173 | Opens automatically and is forwarded publicly while the Codespace is running |
-| SentinelOps API | 8000 | Forwarded; OpenAPI at `/docs` |
-| Sentinel Shop demo | 8001 | Forwarded; OpenAPI at `/docs` |
+---
 
-Codespaces dashboard URL format: `https://<codespace-name>-5173.app.github.dev/`. The port is public automatically, but the URL is reachable only while that Codespace and `make demo` are running. Use the Render deployment described below for an always-on competition URL.
+## 🐳 Docker
 
-### Stable Render deployment
+```bash
+docker compose up --build
+```
 
-The root `render.yaml` Blueprint creates three services:
+Docker mode runs candidate checks with networking disabled, bounded resources, limited processes, execution timeouts, and a read-only container filesystem.
 
-- `janicebenita-sentinelops.onrender.com` — static React dashboard
-- `janicebenita-sentinelops-api.onrender.com` — FastAPI agent backend
-- `janicebenita-sentinel-shop.onrender.com` — seeded e-commerce demo application
+When Docker is unavailable, SentinelOps selects its restricted Local Sandbox. The fallback copies candidate code into a temporary workspace and accepts only exact predefined test commands through `shell=False` execution.
 
-Create a Render Blueprint from this repository and deploy it. The hosted backend uses deterministic mock mode, seeds incidents when its ephemeral SQLite database is empty, and automatically selects the restricted Local Sandbox because nested Docker is unavailable. Free services can require a short cold start after inactivity; no API keys are required.
+---
 
-For split production hosting, build the frontend with `VITE_API_BASE_URL=https://api.example.com` and set backend `CORS_ORIGINS` to the exact dashboard origins. Defaults allow only local Vite origins; wildcard CORS is not enabled. Deploy the backend and demo app as separate Python services, use PostgreSQL for multi-worker operation, and keep secrets in the hosting platform rather than repository files. See `.env.production.example`.
+## 🎬 Demo Scenario
 
-Deterministic screenshot paths are available at `/?demoState=healthy`, `/?demoState=incident`, `/?demoState=evidence`, `/?demoState=hypothesis`, `/?demoState=reproduced`, `/?demoState=patch`, `/?demoState=verified`, `/?demoState=approval`, and `/?demoState=completed`. These are read-only fixtures and never bypass normal approval.
+The seeded Sentinel Shop incident is a checkout failure triggered by the combination of:
+
+```text
+Shipping region: TN
+Discount code: SAVE10
+Expected symptom: HTTP 500 and an error-rate spike
+```
+
+The investigation shows a nullable Tennessee tax rate as the highest-ranked explanation, reproduces the failure offline, generates a regression test, evaluates an isolated one-line candidate fix, and stops at human approval after all checks pass.
 
 ### Three-minute demo
 
@@ -115,18 +151,128 @@ Deterministic screenshot paths are available at `/?demoState=healthy`, `/?demoSt
 
 - **0:00–0:20** Open the healthy dashboard and Sentinel Shop product endpoint.
 - **0:20–0:40** Trigger the TN + `SAVE10` checkout and show the HTTP 500/error-rate spike.
-- **0:40–1:10** Start Incident 1 and show collected JSON logs, metrics, trace span, Git evidence, and audit events.
-- **1:10–1:35** Show the ranked hypotheses; the nullable TN tax-rate explanation ranks first with evidence for and against.
-- **1:35–1:55** Reproduce the failure in the network-disabled sandbox and show the generated regression test failing before the patch.
-- **1:55–2:25** Review the isolated one-line candidate diff and run regression, unit, integration, Ruff, MyPy, and Bandit gates.
-- **2:25–2:45** Show the source tree remained unchanged, every check passed, and the agent stopped at human approval.
-- **2:45–3:00** Approve, create the PR report, show the persisted audit timeline, then Reset Demo. State that nothing was deployed.
+- **0:40–1:10** Start Incident 1 and inspect JSON logs, metrics, trace span, Git evidence, and audit events.
+- **1:10–1:35** Review ranked hypotheses with evidence for and against the nullable TN tax-rate explanation.
+- **1:35–1:55** Reproduce the failure in the network-disabled sandbox and show the regression test failing before the patch.
+- **1:55–2:25** Review the isolated one-line diff and run regression, unit, integration, Ruff, MyPy, and Bandit gates.
+- **2:25–2:45** Confirm the source tree remains unchanged, every check passes, and the agent stops at human approval.
+- **2:45–3:00** Approve, create the PR report, inspect the persisted audit timeline, and reset the demo. Nothing is deployed.
 
-## Configuration
+---
 
-`LLM_PROVIDER=mock` is the default and needs no paid API. For an OpenAI-compatible endpoint set `LLM_PROVIDER=openai`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL`. `GEMINI_API_KEY` is reserved for the optional adapter. Do not commit `.env`.
+## 🧠 Architecture
 
-## Quality commands
+```mermaid
+flowchart LR
+    A[Sentinel Shop] -->|logs, metrics, traces| B[Evidence Collectors]
+    C[Git, Source and Tests] --> B
+    B --> D[Persisted Agent State Machine]
+    D --> E[Structured LLM Provider]
+    E --> F[Ranked Hypotheses]
+    F --> G[Failure Reproduction]
+    G --> H[Regression Test]
+    H --> I[Patch Policy]
+    I --> J[Docker or Local Sandbox]
+    J --> K[Six Verification Gates]
+    K --> L{Human Approval}
+    L -->|Approve| M[Local Branch, Commit and PR Report]
+    L -->|Reject| N[Close Without Changes]
+    M --> O[Never Auto-Deploy]
+```
+
+### Persisted workflow
+
+```text
+Incident → Evidence → Hypotheses → Reproduction → Regression
+         → Candidate Patch → Verification → Human Approval
+         → PR Report or Rejection → Audit Timeline
+```
+
+The backend validates a 20-state workflow so transitions cannot be skipped by the model or the UI.
+
+---
+
+## 🛠 Technology Stack
+
+### 🎨 Frontend
+
+<p>
+  <img src="https://img.shields.io/badge/React_18-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React 18" />
+  <img src="https://img.shields.io/badge/TypeScript_5-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript 5" />
+  <img src="https://img.shields.io/badge/Vite_5-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite 5" />
+  <img src="https://img.shields.io/badge/TanStack_Query-FF4154?style=flat-square&logo=reactquery&logoColor=white" alt="TanStack Query" />
+  <img src="https://img.shields.io/badge/Recharts-22D3EE?style=flat-square" alt="Recharts" />
+</p>
+
+- Responsive operations dashboard
+- Incident state rail and evidence panels
+- Metrics and verification visualizations
+- Candidate diff review and approval controls
+
+### ⚙️ Backend and Agent
+
+<p>
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Pydantic_2-E92063?style=flat-square&logo=pydantic&logoColor=white" alt="Pydantic 2" />
+  <img src="https://img.shields.io/badge/SQLAlchemy_2-D71F00?style=flat-square" alt="SQLAlchemy 2" />
+  <img src="https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white" alt="SQLite" />
+</p>
+
+- FastAPI orchestration and demo APIs
+- Pydantic-validated LLM contracts
+- SQLAlchemy persistence for incidents, evidence, artifacts, checks, and audits
+- Deterministic mock provider plus an optional OpenAI-compatible boundary
+
+### 🔐 Safety and Quality
+
+<p>
+  <img src="https://img.shields.io/badge/Pytest-0A9EDC?style=flat-square&logo=pytest&logoColor=white" alt="Pytest" />
+  <img src="https://img.shields.io/badge/Ruff-D7FF64?style=flat-square&logo=ruff&logoColor=black" alt="Ruff" />
+  <img src="https://img.shields.io/badge/MyPy-2A6DB2?style=flat-square" alt="MyPy" />
+  <img src="https://img.shields.io/badge/Bandit-Security-E11D48?style=flat-square" alt="Bandit" />
+  <img src="https://img.shields.io/badge/Docker-Sandbox-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker sandbox" />
+</p>
+
+- Protected-path and diff-size policy
+- Assertion and test-protection rules
+- Exact command allowlist
+- Network-disabled candidate workspace
+- Regression, unit, integration, lint, type, and security gates
+
+---
+
+## 📁 Repository Structure
+
+```text
+backend/
+  app/
+    agent/          # persisted workflow and state model
+    api/            # FastAPI incident and approval routes
+    llm/            # mock and optional model providers
+    models/         # SQLAlchemy entities
+    policies/       # protected paths and command allowlist
+    schemas/        # validated structured contracts
+    services/       # audit and demo seed services
+    tools/          # evidence readers, patch tools, sandbox
+  tests/
+
+demo_app/
+  app/              # observable Sentinel Shop service
+  seeded_bugs/      # deterministic incident fixture
+  tests/
+
+frontend/
+  src/              # React dashboard, charts and approval UI
+
+sandbox/            # isolated candidate execution image
+scripts/            # setup, traffic, reset and E2E validation
+docs/               # architecture, API, safety and demo guides
+data/               # local telemetry and incident fixtures
+```
+
+---
+
+## ✅ Quality Commands
 
 ```bash
 make test
@@ -135,22 +281,104 @@ make typecheck
 make security
 ```
 
-See [API](docs/api.md), [architecture](docs/architecture.md), [safety model](docs/safety.md), and the [live demo script](docs/demo-script.md).
+The verification view reports six independent checks:
 
-## Known limitations
+| Gate | Purpose |
+|---|---|
+| Regression | Proves the original failure and validates the repair |
+| Unit | Protects component behavior |
+| Integration | Validates service interactions |
+| Ruff | Enforces Python lint rules |
+| MyPy | Checks static types |
+| Bandit | Scans candidate Python code for security issues |
 
-- The hackathon PR is a local, simulated record by default; GitHub PR creation is optional and credential-dependent.
-- SQLite is single-instance development storage; deploy PostgreSQL for multiple workers.
-- Only Incident 1 has a complete repair path.
-- The Gemini adapter is intentionally not bundled; mock mode is the supported zero-key demo.
-- The candidate-patch workspace/commit path is intentionally conservative and must not be used as production deployment automation.
+---
 
-## Roadmap
+## 🛡️ Safety Behavior
 
-Real OpenTelemetry collector storage, PostgreSQL migrations, GitHub Checks integration, ephemeral Kubernetes sandbox jobs, more repair templates, and post-merge observation without automatic deployment.
+SentinelOps cannot approve its own repair. Model output is advisory until deterministic policy and verification gates accept the candidate.
 
-## Screenshots
+- The model cannot bypass workflow states.
+- Candidate code is evaluated outside the original source tree.
+- Docker reproduction runs without network access.
+- Arbitrary commands and package installation are rejected.
+- Protected paths, tests, and assertions cannot be silently changed.
+- Failed or missing gates block approval readiness.
+- Every material action is recorded in the audit timeline.
+- Human rejection closes the repair without source changes.
+- Approval may prepare a PR report, but **nothing is automatically deployed**.
 
-Dashboard overview, ranked hypotheses, verification gate, and approval screen placeholders are under `docs/screenshots/` for hackathon capture.
+Read the complete [safety model](docs/safety.md) and [documented limitations](docs/limitations.md).
 
+---
 
+## 🌐 Live Demo
+
+| Service | URL |
+|---|---|
+| 🖥️ SentinelOps Dashboard | https://janicebenita-sentinelops.onrender.com/ |
+| 🤖 SentinelOps API | https://janicebenita-sentinelops-api.onrender.com/docs |
+| 🛒 Sentinel Shop | https://janicebenita-sentinel-shop.onrender.com/docs |
+
+Deterministic screenshot states are available through `?demoState=healthy`, `incident`, `evidence`, `hypothesis`, `reproduced`, `patch`, `verified`, `approval`, and `completed`.
+
+---
+
+## ⚙️ Configuration
+
+`LLM_PROVIDER=mock` is the default and needs no paid API. For an OpenAI-compatible endpoint, configure:
+
+```env
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your-key
+OPENAI_BASE_URL=https://api.example.com/v1
+OPENAI_MODEL=your-model
+```
+
+Do not commit `.env` or secrets. `GEMINI_API_KEY` is reserved for the optional adapter.
+
+---
+
+## 🚧 Current Limitations
+
+- SQLite is intended for a single development or demo instance.
+- Incident 1 contains the complete automated repair path; the other seeded incidents focus on diagnosis and escalation.
+- The default PR artifact is a local, simulated report unless GitHub credentials are explicitly configured.
+- The Local Sandbox runs reduced checks; Docker mode provides the complete isolation and six-gate path.
+- Render free-tier instances use ephemeral storage and may cold-start after inactivity.
+
+---
+
+## 🔮 Roadmap
+
+- PostgreSQL persistence and multi-worker execution
+- Real OpenTelemetry collector storage
+- GitHub Checks and richer pull-request integration
+- Ephemeral Kubernetes sandbox jobs
+- Additional repair templates and incident classes
+- Post-merge observation without automatic deployment
+
+---
+
+## 📚 Documentation
+
+| Document | Description |
+|---|---|
+| [Architecture](docs/architecture.md) | System components and workflow design |
+| [API Reference](docs/api.md) | Backend endpoint guide |
+| [Safety Model](docs/safety.md) | Deterministic policy and approval boundaries |
+| [Demo Script](docs/demo-script.md) | Guided product demonstration |
+| [Evaluation](docs/evaluation.md) | Validation and judging evidence |
+| [Judge Q&A](docs/judge-qa.md) | Common technical and product questions |
+| [Submission Summary](docs/submission-summary.md) | Concise project narrative |
+
+---
+
+<p align="center">
+  <strong>🛡️ SentinelOps</strong><br/>
+  Evidence first. Verification required. Humans remain in control.
+</p>
+
+<p align="center">
+  ⭐ Autonomous reliability engineering without autonomous deployment ⭐
+</p>
