@@ -1,5 +1,9 @@
 # SentinelOps — Autonomous AI Reliability Engineer
 
+[**Launch the Live Demo →**](https://janicebenita-sentinelops.onrender.com/)
+
+> Hosted on Render. Free-tier services may take about 50 seconds to wake after inactivity.
+
 SentinelOps is an evidence-first incident repair agent. It collects observable failure signals, ranks falsifiable hypotheses, proves a regression, proposes a bounded patch, verifies mandatory gates in a restricted sandbox, and stops for human approval before preparing a pull request. It never deploys.
 
 ## Problem
