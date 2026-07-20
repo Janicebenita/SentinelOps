@@ -111,6 +111,8 @@ Deterministic screenshot paths are available at `/?demoState=healthy`, `/?demoSt
 
 ### Three-minute demo
 
+[**▶ Watch the complete 3:30 narrated demo with human approval →**](docs/sentinelops-complete-demo-with-approval.mp4)
+
 - **0:00–0:20** Open the healthy dashboard and Sentinel Shop product endpoint.
 - **0:20–0:40** Trigger the TN + `SAVE10` checkout and show the HTTP 500/error-rate spike.
 - **0:40–1:10** Start Incident 1 and show collected JSON logs, metrics, trace span, Git evidence, and audit events.
@@ -150,3 +152,5 @@ Real OpenTelemetry collector storage, PostgreSQL migrations, GitHub Checks integ
 ## Screenshots
 
 Dashboard overview, ranked hypotheses, verification gate, and approval screen placeholders are under `docs/screenshots/` for hackathon capture.
+
+
