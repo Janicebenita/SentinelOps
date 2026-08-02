@@ -36,3 +36,13 @@ def test_full_mock_workflow(client, monkeypatch):
     assert client.post(f"/api/incidents/{iid}/approve", json={"approved_by": "operator"}).status_code == 200
     assert client.post(f"/api/incidents/{iid}/create-pr").json()["status"] == "draft"
     assert len(client.get(f"/api/incidents/{iid}/audit-log").json()) >= 10
+
+def test_finale_endpoints_require_no_deployment_path(client):
+    client.post("/api/demo/seed")
+    iid=client.get("/api/incidents").json()[-1]["id"]
+    assert client.post(f"/api/incidents/{iid}/digital-twin").status_code==200
+    replay=client.post(f"/api/incidents/{iid}/replay",json={"attempts":3}).json()
+    assert len(replay)==3 and len({x["deterministic_hash"] for x in replay})==1
+    tournament=client.post(f"/api/incidents/{iid}/repair-tournament").json()
+    assert tournament["recommended_candidate"]["candidate_id"]=="candidate-c"
+    assert client.post(f"/api/incidents/{iid}/deploy").status_code==404

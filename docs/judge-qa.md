@@ -13,3 +13,16 @@
 - **Why one fully repairable incident?** The MVP prioritizes one credible end-to-end proof over shallow templates.
 - **What data is required?** Scoped logs, metrics, traces, repository history and tests.
 - **How are credentials protected?** Environment-only configuration, redacted provider errors, no sandbox secrets, and ignored `.env` files.
+# Finale judge Q&A
+
+**What is novel?** SentinelOps evaluates several plausible repairs inside one immutable incident twin, then uses counterfactual replay and deterministic eligibility to detect false fixes before human approval.
+
+**Why are multiple candidates safer?** A single generated patch can pass the original regression while masking a symptom. The tournament makes alternatives, risks, failed gates, and nearby behavior directly comparable.
+
+**Is blast radius proven?** No. It is a transparent 0–100 estimate from modified components, transitive dependencies, uncovered critical paths, public contracts, and configuration scope. Assumptions and evidence remain visible.
+
+**Is causal confidence a probability?** No. Low/Moderate/High labels summarize evidence and falsification results; they are not calibrated probabilities.
+
+**Can the model approve or deploy?** No. Backend state policy requires a human approval record, and the product has no automatic deployment route.
+
+**Is the audit package blockchain?** No. It is a SHA-256 tamper-evident event chain and artifact bundle. It does not claim legal non-repudiation.

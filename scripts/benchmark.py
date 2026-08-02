@@ -2,12 +2,15 @@
 from __future__ import annotations
 import statistics
 import time
+from typing import TypedDict
 from backend.app.llm.mock_provider import MockLLMProvider
 from backend.app.schemas import HypothesisResponse,PatchProposal
 
 CASES=[("Discount + TN tax",True),("Catalog latency regression",False),("Payment configuration missing",False)]
+class BenchmarkRow(TypedDict):
+    incident:str;diagnosed:bool;patch:bool;abstained:bool;runtime:float
 def main()->int:
-    rows=[]
+    rows:list[BenchmarkRow]=[]
     for _ in range(5):
         for name,repairable in CASES:
             started=time.perf_counter(); provider=MockLLMProvider()

@@ -4,6 +4,14 @@ __pycache__/
 *.py[cod]
 *.db
 .pytest_cache/
+.pytest-tmp/
+.pytest-tmp-*/
+.runtime-tmp-*/
+.video_tools/
+storytelling-output/
+demo-video/
+voice.wav
+debug.log
 .coverage
 .mypy_cache/
 .ruff_cache/

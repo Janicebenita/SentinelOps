@@ -1,0 +1,84 @@
+1
+00:00:00,000 --> 00:00:21,000
+Healthy baseline
+Welcome to SentinelOps, an evidence-first autonomous reliability engineer. The command center begins with a healthy Sentinel Shop baseline. Service health, request volume, latency, and deployment status are visible before any incident is introduced.
+
+2
+00:00:21,000 --> 00:00:41,000
+Customer-visible incident
+We now trigger the seeded Tennessee checkout with the SAVE10 discount. The request returns HTTP five hundred and the error-rate signal rises. SentinelOps records the customer impact whilst preserving the exact request needed for deterministic replay.
+
+3
+00:00:41,000 --> 00:01:03,000
+Evidence collection
+The investigation collects structured JSON logs, metrics, trace spans, configuration, Git history, and audit events. Each claim is linked to evidence rather than accepted from model confidence alone. The live timeline makes every transition reviewable.
+
+4
+00:01:03,000 --> 00:01:25,000
+Falsifiable hypotheses
+SentinelOps ranks multiple root-cause hypotheses. The nullable Tennessee tax-rate explanation leads, with supporting evidence, contradicting evidence, missing evidence, and a falsification test. Confidence is presented as a reasoned label, not guaranteed causality.
+
+5
+00:01:25,000 --> 00:01:45,000
+Reliability Digital Twin
+A Reliability Digital Twin is created from the source commit, configuration, captured inputs, dependency fixtures, runtime fingerprint, random seed, and network policy. Its manifest hash proves every candidate is evaluated against the same conditions.
+
+6
+00:01:45,000 --> 00:02:08,000
+Network-disabled replay
+The original checkout is replayed three times in a network-disabled sandbox. Request, response, logs, traces, metrics, duration, and resource use are captured. Identical deterministic hashes produce a one-hundred-percent reproducibility score for this seeded incident.
+
+7
+00:02:08,000 --> 00:02:31,000
+Three candidate repairs
+The Repair Tournament compares three plausible bounded patches. Candidate A adds a local fallback. Candidate B validates the domain boundary. Candidate C applies explicit null-safe behaviour. All candidates remain isolated from the original source tree.
+
+8
+00:02:31,000 --> 00:02:52,000
+Deterministic gate matrix
+Each candidate runs regression, unit, integration, Ruff, MyPy, and Bandit gates, followed by contract, performance, policy, dependency, resilience, and replay checks. A mandatory failure makes a candidate ineligible regardless of its numerical score.
+
+9
+00:02:52,000 --> 00:03:13,000
+Counterfactual Lab
+The Counterfactual Lab varies region, discount, missing tax rate, dependency latency, database availability, retries, traffic, and concurrency. Nearby scenarios reveal whether a patch repairs the incident or merely masks the original symptom.
+
+10
+00:03:13,000 --> 00:03:34,000
+False-fix rejection
+Candidate A looks convincing because it fixes Tennessee plus SAVE10. However, it introduces a failure when Tennessee checkout has no discount. SentinelOps rejects this false fix using observed counterfactual evidence rather than optimistic model judgement.
+
+11
+00:03:34,000 --> 00:03:57,000
+Blast-radius estimate
+Candidate B passes functionality but touches a wider domain boundary. The impact graph links endpoints, functions, modules, configuration, workflows, and tests. Its normalised blast-radius score is explicitly labelled as an evidence-supported estimate, not certainty.
+
+12
+00:03:57,000 --> 00:04:17,000
+Causal evidence graph
+The evidence graph connects symptoms, telemetry, source lines, hypotheses, reproduction, candidate diffs, verification results, and the approval decision. Every major judge-facing claim provides a direct route back to its supporting artifact.
+
+13
+00:04:17,000 --> 00:04:38,000
+Adversarial review
+A red-team review challenges symptom masking, silent business-logic changes, insecure defaults, protected paths, weakened assertions, performance regressions, and nearby inputs. Candidate C satisfies both the advocate case and deterministic adversarial checks.
+
+14
+00:04:38,000 --> 00:05:00,000
+Human-controlled approval
+Candidate C passes mandatory gates, preserves nearby behavior, and has the smallest estimated blast radius. The original source changed zero times. Automatic deployments remain zero. SentinelOps stops and requires an accountable human decision.
+
+15
+00:05:00,000 --> 00:05:21,000
+Tamper-evident package
+After approval, SentinelOps creates a pull-request report and exports the incident evidence package. Artifact SHA two-fifty-six hashes and a chained audit hash support tamper detection. This is an audit chain, not blockchain or legal non-repudiation.
+
+16
+00:05:21,000 --> 00:05:46,000
+Reliability scorecard
+The final scorecard reports time to evidence, reproduction, candidate generation, verification, linked-claim coverage, false-fix detection, policy blocks, source mutations, and deployments from recorded events. SentinelOps turns AI repair into evidence-proven, human-controlled reliability engineering.
+
+17
+00:05:46,000 --> 00:06:06,000
+Conclusion
+In conclusion, SentinelOps converts AI-generated repair into evidence-proven, human-controlled reliability engineering. Nothing was automatically deployed. Thank you for watching this SentinelOps demonstration.

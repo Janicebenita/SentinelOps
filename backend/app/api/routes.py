@@ -1,13 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from ..agent import workflow
 from ..agent.state import AgentState
 from ..database import get_db
 from ..models import *
-from ..schemas import ApprovalInput, IncidentCreate, IncidentRead
+from ..schemas import ApprovalInput, CounterfactualInput, IncidentCreate, IncidentRead, ReplayInput
 from ..services.audit import transition
 from ..services.demo_seed import ensure_seeded
+from ..services import finale
 router=APIRouter(prefix="/api")
 def serialize(row): return {c.name:getattr(row,c.name) for c in row.__table__.columns}
 @router.post("/incidents",response_model=IncidentRead)
@@ -66,5 +67,55 @@ def trigger(db:Session=Depends(get_db)):
 def traffic(): return {"generated":True,"message":"Use scripts/generate_traffic.py against the demo app"}
 @router.post("/demo/reset")
 def reset(db:Session=Depends(get_db)):
-    for model in [PullRequestRecord,AuditEvent,ApprovalRequest,VerificationRun,PatchCandidate,ReproductionAttempt,Hypothesis,EvidenceItem,Incident]: db.execute(__import__('sqlalchemy').delete(model))
+    for model in [IncidentPackage,AuditChainEvent,RedTeamReview,EvidenceLink,BlastRadiusEstimate,ScenarioResult,CounterfactualScenario,CandidateVerification,RepairCandidate,ReplayRun,TwinManifest,PullRequestRecord,AuditEvent,ApprovalRequest,VerificationRun,PatchCandidate,ReproductionAttempt,Hypothesis,EvidenceItem,Incident]: db.execute(__import__('sqlalchemy').delete(model))
     db.commit(); return {"reset":True}
+
+@router.post("/incidents/{iid}/digital-twin")
+def digital_twin(iid:int,db:Session=Depends(get_db)): return serialize(finale.create_twin(db,workflow.require(db,iid)))
+@router.get("/incidents/{iid}/digital-twin")
+def get_digital_twin(iid:int,db:Session=Depends(get_db)):
+    row=db.scalar(select(TwinManifest).where(TwinManifest.incident_id==iid));
+    if row is None: raise HTTPException(404,"Digital twin not created")
+    return serialize(row)
+@router.post("/incidents/{iid}/replay")
+def replay(iid:int,payload:ReplayInput=ReplayInput(),db:Session=Depends(get_db)): return [serialize(x) for x in finale.replay_incident(db,workflow.require(db,iid),payload.candidate_id,payload.attempts)]
+@router.get("/incidents/{iid}/replays")
+def replays(iid:int,db:Session=Depends(get_db)): return listing(ReplayRun,iid,db)
+@router.post("/incidents/{iid}/repair-tournament")
+def tournament(iid:int,db:Session=Depends(get_db)): return finale.run_tournament(db,workflow.require(db,iid))
+@router.get("/incidents/{iid}/repair-tournament")
+def tournament_results(iid:int,db:Session=Depends(get_db)):
+    candidates=listing(RepairCandidate,iid,db);checks=listing(CandidateVerification,iid,db);blasts=listing(BlastRadiusEstimate,iid,db);reviews=listing(RedTeamReview,iid,db)
+    return {"candidates":candidates,"checks":checks,"blast_radius":blasts,"red_team":reviews,"recommended_candidate":next((x for x in sorted(candidates,key=lambda x:x["score"],reverse=True) if x["eligible"]),None),"weights":finale.WEIGHTS}
+@router.post("/incidents/{iid}/counterfactuals")
+def counterfactuals(iid:int,db:Session=Depends(get_db)): return [serialize(x) for x in finale.run_counterfactuals(db,workflow.require(db,iid))]
+@router.post("/incidents/{iid}/counterfactuals/custom")
+def custom_counterfactual(iid:int,payload:CounterfactualInput,db:Session=Depends(get_db)): return [serialize(x) for x in finale.run_custom_counterfactual(db,workflow.require(db,iid),payload.model_dump())]
+@router.get("/incidents/{iid}/counterfactuals")
+def counterfactual_results(iid:int,db:Session=Depends(get_db)): return listing(ScenarioResult,iid,db)
+@router.get("/incidents/{iid}/evidence-links")
+def evidence_links(iid:int,db:Session=Depends(get_db)): return [serialize(x) for x in finale.create_evidence_links(db,workflow.require(db,iid))]
+@router.get("/incidents/{iid}/scorecard")
+def reliability_scorecard(iid:int,db:Session=Depends(get_db)): return finale.scorecard(db,workflow.require(db,iid))
+@router.post("/incidents/{iid}/audit-package")
+def audit_package(iid:int,db:Session=Depends(get_db)): return serialize(finale.export_package(db,workflow.require(db,iid)))
+@router.post("/incidents/{iid}/audit-package/verify")
+def verify_audit_package(iid:int,db:Session=Depends(get_db)):
+    row=db.scalar(select(IncidentPackage).where(IncidentPackage.incident_id==iid).order_by(IncidentPackage.id.desc()));
+    if row is None: raise HTTPException(404,"Audit package not created")
+    valid=finale.verify_package(row);row.verified=valid;db.commit();return {"verified":valid,"package_hash":row.package_hash,"final_audit_hash":row.final_audit_hash}
+@router.get("/incidents/{iid}/audit-package")
+def get_audit_package(iid:int,db:Session=Depends(get_db)):
+    row=db.scalar(select(IncidentPackage).where(IncidentPackage.incident_id==iid).order_by(IncidentPackage.id.desc()));
+    if row is None: raise HTTPException(404,"Audit package not created")
+    return serialize(row)
+@router.get("/incidents/{iid}/audit-package/report")
+def audit_report(iid:int,db:Session=Depends(get_db)):
+    row=db.scalar(select(IncidentPackage).where(IncidentPackage.incident_id==iid).order_by(IncidentPackage.id.desc()));
+    if row is None: raise HTTPException(404,"Audit package not created")
+    return Response(finale.executive_report(row),media_type="text/markdown",headers={"Content-Disposition":f'attachment; filename="sentinelops-incident-{iid}.md"'})
+@router.get("/incidents/{iid}/audit-package/bundle")
+def audit_bundle(iid:int,db:Session=Depends(get_db)):
+    row=db.scalar(select(IncidentPackage).where(IncidentPackage.incident_id==iid).order_by(IncidentPackage.id.desc()));
+    if row is None: raise HTTPException(404,"Audit package not created")
+    return Response(finale.evidence_zip(row),media_type="application/zip",headers={"Content-Disposition":f'attachment; filename="sentinelops-incident-{iid}-evidence.zip"'})
