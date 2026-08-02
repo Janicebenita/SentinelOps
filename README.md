@@ -98,27 +98,6 @@ The finale extends—not replaces—the evidence-first workflow with an immutabl
 
 > Blast radius and causal confidence are explicitly labeled estimates based on documented assumptions and evidence. SentinelOps does not claim formal proof, calibrated probability, blockchain, or legal non-repudiation.
 
-### Finale architecture
-
-```mermaid
-flowchart TB
-  I[Incident telemetry and source] --> T[Immutable TwinManifest]
-  T --> R[3x deterministic replay]
-  R --> A[Candidate A: conditional fallback]
-  R --> B[Candidate B: boundary validation]
-  R --> C[Candidate C: null normalization]
-  A & B & C --> G[6 mandatory + 6 comparison gates]
-  G --> W[Counterfactual scenario matrix]
-  W --> X[Blast-radius and evidence graphs]
-  X --> D[Adversarial deterministic review]
-  D --> H{Human approval}
-  H -->|approve| P[PR report + tamper-evident package]
-  H -->|reject| Z[Close without source changes]
-  P --> N[NOT DEPLOYED]
-```
-
----
-
 ## ⚡ Quick Start
 
 ### Prerequisites
@@ -212,34 +191,111 @@ The investigation shows a nullable Tennessee tax rate as the highest-ranked expl
 
 ---
 
-## 🧠 Architecture
+## 🧠 Reliability Digital Twin Architecture
 
 ```mermaid
-%%{init: {"themeVariables": {"fontSize": "22px"}, "flowchart": {"nodeSpacing": 70, "rankSpacing": 80, "curve": "basis"}}}%%
+%%{init: {"themeVariables": {"fontSize": "18px"}, "flowchart": {"nodeSpacing": 48, "rankSpacing": 62, "curve": "basis"}}}%%
 flowchart TB
-    A[Sentinel Shop<br/>Observable Demo Service] -->|Logs · Metrics · Traces| B[Evidence Collectors]
-    C[Git History · Source Code · Tests] --> B
-    B --> D[Persisted Agent<br/>State Machine]
-    D --> E[Structured LLM Provider]
-    E --> F[Ranked, Falsifiable<br/>Hypotheses]
-    F --> G[Network-Disabled<br/>Failure Reproduction]
-    G --> H[Generated Regression Test]
-    H --> I[Bounded Patch Policy]
-    I --> J[Docker or Restricted<br/>Local Sandbox]
-    J --> K[Six Deterministic<br/>Verification Gates]
-    K --> L{Human Approval}
-    L -->|Approve| M[Local Branch · Commit<br/>PR Report]
-    L -->|Reject| N[Close Without Changes]
-    M --> O[Never Auto-Deploy]
+    subgraph INPUTS["1 · Observable incident inputs"]
+        SHOP["Sentinel Shop<br/>TN + SAVE10 checkout"]
+        TELEMETRY["Requests · Logs · Metrics · Traces<br/>Configuration · Dependency state"]
+        REPOSITORY["Git history · Source code<br/>Tests · Lock files"]
+        SHOP --> TELEMETRY
+    end
+
+    subgraph INVESTIGATION["2 · Evidence-first investigation"]
+        COLLECT["Evidence collectors<br/>schema-validated records"]
+        STATE["Backend policy state machine<br/>validated transitions only"]
+        HYPOTHESES["Ranked, falsifiable hypotheses<br/>supporting · contradicting · missing evidence"]
+        AUDIT["Persisted evidence links and timeline<br/>chained SHA-256 event hashes"]
+        COLLECT --> STATE --> HYPOTHESES
+        COLLECT --> AUDIT
+        STATE --> AUDIT
+    end
+
+    TELEMETRY --> COLLECT
+    REPOSITORY --> COLLECT
+
+    subgraph TWIN["3 · Isolated Reliability Digital Twin"]
+        MANIFEST["Immutable TwinManifest<br/>commit · hashes · seed · runtime · limits · allowlist"]
+        SANDBOX["Network-disabled candidate sandbox<br/>Docker preferred · restricted local fallback"]
+        REPLAY["Three deterministic incident replays<br/>request · response · logs · spans · metrics · resources"]
+        REPRO["Reproducibility score<br/>identical successful replays ÷ attempts"]
+        MANIFEST --> SANDBOX --> REPLAY --> REPRO
+    end
+
+    HYPOTHESES --> MANIFEST
+    AUDIT --> MANIFEST
+
+    subgraph TOURNAMENT["4 · Multi-candidate Repair Tournament — same Twin, seed and fixtures"]
+        CANDIDATE_A["Candidate A<br/>conditional fallback"]
+        CANDIDATE_B["Candidate B<br/>boundary validation"]
+        CANDIDATE_C["Candidate C<br/>null normalisation"]
+        GATES["Deterministic gate matrix<br/>Regression · Unit · Integration · Ruff · MyPy · Bandit<br/>Fault injection · Performance · API contract<br/>Dependency impact · Security policy · Replay determinism"]
+        ELIGIBILITY{"Every mandatory gate passed?"}
+        INELIGIBLE["Ineligible candidate<br/>cannot be recommended"]
+        CANDIDATE_A --> GATES
+        CANDIDATE_B --> GATES
+        CANDIDATE_C --> GATES
+        GATES --> ELIGIBILITY
+        ELIGIBILITY -->|"No"| INELIGIBLE
+    end
+
+    REPRO --> CANDIDATE_A
+    REPRO --> CANDIDATE_B
+    REPRO --> CANDIDATE_C
+
+    subgraph ANALYSIS["5 · Counterfactual and impact analysis"]
+        COUNTERFACTUAL["Counterfactual scenario matrix<br/>regions · discounts · tax state · latency · traffic · outages"]
+        FALSE_FIX["False-fix detector<br/>rejects nearby behavioural regressions"]
+        BLAST["Blast-radius estimate and graph<br/>direct · transitive · uncovered · contract impact"]
+        EVIDENCE_GRAPH["Causal evidence graph<br/>every major claim links to evidence"]
+        RED_TEAM["Adversarial patch review<br/>business logic · security · tests · performance · assumptions"]
+        COUNTERFACTUAL --> FALSE_FIX --> BLAST --> RED_TEAM
+        EVIDENCE_GRAPH --> RED_TEAM
+    end
+
+    ELIGIBILITY -->|"Yes"| COUNTERFACTUAL
+    AUDIT --> EVIDENCE_GRAPH
+    CANDIDATE_A --> EVIDENCE_GRAPH
+    CANDIDATE_B --> EVIDENCE_GRAPH
+    CANDIDATE_C --> EVIDENCE_GRAPH
+    INELIGIBLE --> EVIDENCE_GRAPH
+
+    subgraph DECISION["6 · Evidence-proven human control"]
+        SCORE["Transparent weighted score<br/>eligibility overrides model confidence"]
+        RECOMMEND["Recommended candidate<br/>advocate case · red-team case · deterministic verdict"]
+        APPROVAL{"Human approval required"}
+        REJECTED["Reject or close<br/>without source changes"]
+        PACKAGE["PR report + tamper-evident incident package<br/>JSON · executive report · ZIP evidence bundle"]
+        VERIFY["Verify artifact hashes<br/>and final audit-chain hash"]
+        SAFETY["Original source unchanged during evaluation<br/>AUTOMATIC DEPLOYMENT: NONE"]
+        SCORE --> RECOMMEND --> APPROVAL
+        APPROVAL -->|"Reject"| REJECTED --> SAFETY
+        APPROVAL -->|"Approve repair proposal"| PACKAGE --> VERIFY --> SAFETY
+    end
+
+    RED_TEAM --> SCORE
+    AUDIT --> PACKAGE
+
+    POLICY["Safety boundary<br/>No arbitrary commands · No package installation · No secret mounts<br/>No protected-path or silent test weakening · LLM cannot approve or write state"]
+    POLICY -.-> STATE
+    POLICY -.-> SANDBOX
+    POLICY -.-> GATES
+    POLICY -.-> APPROVAL
 
     classDef source fill:#082f49,stroke:#22d3ee,color:#f8fafc,stroke-width:2px;
     classDef process fill:#172554,stroke:#818cf8,color:#f8fafc,stroke-width:2px;
-    classDef safety fill:#451a03,stroke:#f59e0b,color:#fef3c7,stroke-width:3px;
+    classDef evidence fill:#052e16,stroke:#4ade80,color:#f0fdf4,stroke-width:2px;
+    classDef caution fill:#451a03,stroke:#f59e0b,color:#fef3c7,stroke-width:2px;
     classDef stop fill:#450a0a,stroke:#fb7185,color:#fff1f2,stroke-width:2px;
-    class A,C source;
-    class B,D,E,F,G,H,I,J,K process;
-    class L,M safety;
-    class N,O stop;
+    classDef safety fill:#3b0764,stroke:#c084fc,color:#faf5ff,stroke-width:3px;
+    class SHOP,TELEMETRY,REPOSITORY source;
+    class COLLECT,STATE,HYPOTHESES,MANIFEST,SANDBOX,REPLAY,REPRO,CANDIDATE_A,CANDIDATE_B,CANDIDATE_C,GATES,COUNTERFACTUAL,BLAST,RED_TEAM,SCORE,RECOMMEND process;
+    class AUDIT,EVIDENCE_GRAPH,PACKAGE,VERIFY evidence;
+    class ELIGIBILITY,APPROVAL,POLICY caution;
+    class INELIGIBLE,FALSE_FIX,REJECTED stop;
+    class SAFETY safety;
 ```
 
 ### Persisted workflow

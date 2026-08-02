@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: janicebenita-sentinelops-api
+    name: janicebenita-sentinelops-finale-api
     runtime: python
     plan: free
-    branch: main
+    branch: finale/reliability-digital-twin
     buildCommand: pip install -e ".[dev]"
     startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
@@ -14,19 +14,19 @@ services:
       - key: LLM_PROVIDER
         value: mock
       - key: DATABASE_URL
-        value: sqlite:////tmp/sentinelops.db
+        value: sqlite:////tmp/sentinelops-finale.db
       - key: DEMO_REPO_PATH
         value: .
       - key: DEMO_APP_URL
-        value: https://janicebenita-sentinel-shop.onrender.com
+        value: https://janicebenita-sentinel-shop-finale.onrender.com
       - key: CORS_ORIGINS
-        value: https://janicebenita-sentinelops.onrender.com
+        value: https://janicebenita-sentinelops-finale.onrender.com
 
   - type: web
-    name: janicebenita-sentinel-shop
+    name: janicebenita-sentinel-shop-finale
     runtime: python
     plan: free
-    branch: main
+    branch: finale/reliability-digital-twin
     buildCommand: pip install -e .
     startCommand: uvicorn demo_app.app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
@@ -36,9 +36,9 @@ services:
         value: 3.12.8
 
   - type: web
-    name: janicebenita-sentinelops
+    name: janicebenita-sentinelops-finale
     runtime: static
-    branch: main
+    branch: finale/reliability-digital-twin
     buildCommand: corepack enable && cd frontend && pnpm install --frozen-lockfile && pnpm run build
     staticPublishPath: frontend/dist
     autoDeployTrigger: checksPass
@@ -46,7 +46,7 @@ services:
       - key: NODE_VERSION
         value: 22.14.0
       - key: VITE_API_BASE_URL
-        value: https://janicebenita-sentinelops-api.onrender.com
+        value: https://janicebenita-sentinelops-finale-api.onrender.com
     routes:
       - type: rewrite
         source: /*

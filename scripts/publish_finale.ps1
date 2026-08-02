@@ -41,7 +41,7 @@ try {
 } finally { Pop-Location }
 
 $Paths = @(
-    '.gitignore', 'README.md', 'pyproject.toml', 'render-finale.yaml',
+    '.gitignore', 'README.md', 'pyproject.toml', 'render.yaml', 'render-finale.yaml',
     'backend/app/agent/workflow.py', 'backend/app/api/routes.py',
     'backend/app/models/entities.py', 'backend/app/schemas/contracts.py',
     'backend/app/services/finale.py', 'backend/app/tools/sandbox.py',
