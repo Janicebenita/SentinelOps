@@ -1,0 +1,7 @@
+spec_version: "0.1.0"
+name: sentinelops-reliability-engineer
+version: "0.1.0"
+description: >-
+  Investigates software incidents, ranks evidence-backed hypotheses,
+  reproduces failures in an isolated sandbox, proposes bounded patches,
+  runs deterministic verification gates, and stops for human approval.
